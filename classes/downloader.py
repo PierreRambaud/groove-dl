@@ -35,11 +35,14 @@ class downloader:
         markTimer = threading.Timer(30 + random.randint(0,5), self.groove.markStreamKeyOver30Seconds, [song["SongID"], self.getQueueID(), stream["ip"], stream["streamKey"]]) 
         markTimer.start()
         try:
-            process.wait() #Wait for wget to finish
-        except KeyboardInterrupt: #If we are interrupted by the user
+            #Wait for wget to finish
+            process.wait()
+        #If we are interrupted by the user
+        except KeyboardInterrupt:
             os.remove('%s - %s.mp3' % (song["ArtistName"], song["SongName"])) #Delete the song
             print "\nDownload cancelled. File deleted."
         markTimer.cancel()
 
     def getQueueID(self):
         return str(random.randint(10000000000000000000000,99999999999999999999999))
+
