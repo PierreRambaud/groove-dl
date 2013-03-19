@@ -19,17 +19,19 @@ class downloader:
             os.mkdir(playlistDirectory)
 
         for song in songs:
-            self.downloadSong(song, playlistDirectory)
+            filename = '%s/%s - %s.mp3' % (playlistDirectory, song["ArtistName"], song["Name"])
+            print ('Download %s' % (filename))
+            if (os.path.exists(filename) != True):
+                self.downloadSong(song, playlistDirectory, filename)
 
-    def downloadSong(self, song, playlistDirectory):
-        print "Retrieving stream key.."
+    def downloadSong(self, song, playlistDirectory, filename):
         #Get the StreamKey for the selected song
         stream = self.groove.getStreamKeyFromSongIDEx(song["SongID"])
         if stream == []:
             print "Failed"
             return
         #Run wget to download the song
-        cmd = 'wget --post-data=streamKey=%s -O "%s/%s - %s.mp3" "http://%s/stream.php"' % (stream["streamKey"], playlistDirectory, song["ArtistName"], song["Name"], stream["ip"]) 
+        cmd = 'wget --progress=bar:force --post-data=streamKey=%s -O "%s" "http://%s/stream.php"' % (stream["streamKey"], filename, stream["ip"]) 
         process = subprocess.Popen(cmd, shell=True)
         #Starts a timer that reports the song as being played for over 30-35 seconds. May not be needed.
         markTimer = threading.Timer(30 + random.randint(0,5), self.groove.markStreamKeyOver30Seconds, [song["SongID"], self.getQueueID(), stream["ip"], stream["streamKey"]]) 
@@ -39,10 +41,10 @@ class downloader:
             process.wait()
         #If we are interrupted by the user
         except KeyboardInterrupt:
-            os.remove('%s - %s.mp3' % (song["ArtistName"], song["SongName"])) #Delete the song
+            os.remove(filename) #Delete the song
             print "\nDownload cancelled. File deleted."
-        markTimer.cancel()
+            markTimer.cancel()
+            exit()
 
     def getQueueID(self):
         return str(random.randint(10000000000000000000000,99999999999999999999999))
-
