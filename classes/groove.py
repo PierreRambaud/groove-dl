@@ -5,7 +5,6 @@ import random
 import httplib
 import string
 import hashlib
-import httplib
 import json
 import gzip
 import os
@@ -42,7 +41,7 @@ class groove:
         if (self.token == None):
             parameters = self.getRequestParameters()
             parameters["method"] = "getCommunicationToken"
-            response = self.executeQuery("/more.php", parameters, self.htmlClient[3]);
+            response = self.executeQuery("/more.php", parameters, self.htmlClient[3])
             self.token = response["result"]
 
         return self.token
@@ -53,7 +52,7 @@ class groove:
         parameters["method"] = "getPlaylistByID"
         parameters["parameters"]["playlistID"] = playlistID
         parameters["header"]["token"] = self.prepareToken(parameters["method"], self.htmlClient[2])
-        return self.executeQuery("/more.php?" + parameters["method"], parameters, self.htmlClient[3]);
+        return self.executeQuery("/more.php?" + parameters["method"], parameters, self.htmlClient[3])
 
     #Prepare request parameters
     def getRequestParameters(self):
@@ -89,7 +88,7 @@ class groove:
         parameters["header"]["clientRevision"] = self.jsqueue[1]
         parameters["method"] = "getStreamKeyFromSongIDEx"
         parameters["header"]["token"] = self.prepareToken(parameters["method"], self.jsqueue[2])
-        return self.executeQuery("/more.php?" + parameters["method"], parameters, self.jsqueue[3])["result"];
+        return self.executeQuery("/more.php?" + parameters["method"], parameters, self.jsqueue[3])["result"]
 
     #Tell Grooveshark that the client has played at least 30 seconds of the song. 
     def markStreamKeyOver30Seconds(self, songID, songQueueID, streamServer, streamKey):
@@ -103,5 +102,19 @@ class groove:
         parameters["header"]["clientRevision"] = self.jsqueue[1]
         parameters["method"] = "markStreamKeyOver30Seconds"
         parameters["header"]["token"] = self.prepareToken(parameters["method"], self.jsqueue[2])
-        return self.executeQuery("/more.php?" + parameters["method"], parameters, self.jsqueue[3])["result"];
+        return self.executeQuery("/more.php?" + parameters["method"], parameters, self.jsqueue[3])["result"]
+
+    def getResultsFromSearch(self, query, type):
+        haystack = ['Songs', 'Artists', 'Albums', 'Playlists']
+        if (type not in haystack):
+            type = 'Songs'
+
+        parameters = self.getRequestParameters()
+        parameters["method"] = "getResultsFromSearch"
+        parameters["parameters"]["query"] = query
+        parameters["parameters"]["type"] = type
+        parameters["header"]["token"] = self.prepareToken(parameters["method"], self.htmlClient[2])
+        songs = self.executeQuery("/more.php?" + parameters["method"], parameters, self.htmlClient[3])["result"]["result"]
+        for idx, song in enumerate(songs):
+            print ('%d - Album: %sSong: %s - %s' % (idx, song['AlbumName'].ljust(40), song['ArtistName'], song['SongName']))
 
