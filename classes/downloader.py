@@ -20,36 +20,43 @@ import os
 import subprocess
 import threading
 import random
+import time
 
 class downloader:
     #Current directory
     currentDirectory = None
     #Groove
     groove = None
+    #song in queue
+    queue = []
+    #Time between download
+    sleepTime = 10
 
     def __init__(self, groove):
         self.currentDirectory = os.getcwd()
         self.groove = groove
 
     def downloadPlaylist(self, name, songs):
-        playlistDirectory = self.currentDirectory + '/songs/playlists/' + name
+        playlistDirectory = self.currentDirectory + '/playlists/' + name
         if (os.path.exists(playlistDirectory) != True):
             os.mkdir(playlistDirectory)
 
-        for song in songs:
+        for idx, song in enumerate(songs):
             filename = '%s/%s - %s.mp3' % (playlistDirectory, song["ArtistName"], song["Name"])
-            print ('Download %s' % (filename))
             if (os.path.exists(filename) != True):
-                self.downloadSong(song, playlistDirectory, filename)
+                self.downloadSong(song, filename)
+                self.waitForNext(idx, songs)
 
-    def downloadSong(self, song, playlistDirectory, filename):
+    def downloadSong(self, song, filename):
+        print ('Download %s' % (filename))
         #Get the StreamKey for the selected song
         stream = self.groove.getStreamKeyFromSongIDEx(song["SongID"])
         if stream == []:
             print "Failed"
             return
         #Run wget to download the song
-        cmd = 'wget --progress=bar:force --post-data=streamKey=%s -O "%s" "http://%s/stream.php"' % (stream["streamKey"], filename, stream["ip"]) 
+        wget = "wget --progress=dot --post-data=streamKey=%s -O \"%s\" \"http://%s/stream.php\"" % (stream["streamKey"], filename, stream["ip"])
+        cmd = wget + " 2>&1 | grep --line-buffered \"%\" | sed -u -e \"s,\.,,g\" | awk '{printf(\"\b\b\b\b%4s\", $2)}'"
         process = subprocess.Popen(cmd, shell=True)
         #Starts a timer that reports the song as being played for over 30-35 seconds. May not be needed.
         markTimer = threading.Timer(30 + random.randint(0,5), self.groove.markStreamKeyOver30Seconds, [song["SongID"], self.getQueueID(), stream["ip"], stream["streamKey"]]) 
@@ -66,3 +73,37 @@ class downloader:
 
     def getQueueID(self):
         return str(random.randint(10000000000000000000000,99999999999999999999999))
+
+    def prepareSongs(self, query, type):
+        songs = self.groove.getResultsFromSearch(query, type)
+        for idx, song in enumerate(songs):
+            result = None
+            songName = ('%d - Album: %sSong: %s - %s' % (idx, song['AlbumName'].ljust(40), song['ArtistName'], song['SongName']))
+            print songName
+            if (idx != 0 and idx % 10 == 0):
+                while (result not in ["n", "q"]):
+                    result = raw_input('Press "n" for next, "Number" for song id, "q" for quit and download songs: ')
+                    if (result.isdigit()):
+                        if (int(result) >= 0 and int(result) <= len(songs)):
+                            self.queue.append(songs[int(result)])
+                            print "Song added"
+
+            if (result == "q"):
+                break;
+            elif (result == "n"):
+                continue
+
+    def downloadQueue(self):
+        if (self.queue != []):
+            for idx, song in enumerate(self.queue):
+                filename = '%s/%s - %s.mp3' % (self.currentDirectory + '/songs', song["ArtistName"], song["SongName"])
+                if (os.path.exists(filename) != True):
+                    self.downloadSong(song, filename)
+                    self.waitForNext(idx, self.queue)
+
+    def waitForNext(self, idx, songs):
+        if (idx < len(songs)):
+            #Wait for next download
+            print "Wait for next download"
+            time.sleep(self.sleepTime)
+

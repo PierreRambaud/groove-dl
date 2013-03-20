@@ -70,7 +70,7 @@ class groove:
         parameters["method"] = "getPlaylistByID"
         parameters["parameters"]["playlistID"] = playlistID
         parameters["header"]["token"] = self.prepareToken(parameters["method"], self.htmlClient[2])
-        return self.executeQuery("/more.php?" + parameters["method"], parameters, self.htmlClient[3])
+        return self.executeQuery("/more.php?" + parameters["method"], parameters, self.htmlClient[3])["result"]
 
     #Prepare request parameters
     def getRequestParameters(self):
@@ -132,7 +132,4 @@ class groove:
         parameters["parameters"]["query"] = query
         parameters["parameters"]["type"] = type
         parameters["header"]["token"] = self.prepareToken(parameters["method"], self.htmlClient[2])
-        songs = self.executeQuery("/more.php?" + parameters["method"], parameters, self.htmlClient[3])["result"]["result"]
-        for idx, song in enumerate(songs):
-            print ('%d - Album: %sSong: %s - %s' % (idx, song['AlbumName'].ljust(40), song['ArtistName'], song['SongName']))
-
+        return self.executeQuery("/more.php?" + parameters["method"], parameters, self.htmlClient[3])["result"]["result"]

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # This source file is part of groove-dl.
 #
 # groove-dl is free software: you can redistribute it and/or modify
@@ -15,8 +16,6 @@
 #
 # @author   Pierre Rambaud (GoT) http://rambaudpierre.fr
 # @license  GNU/LGPL http://www.gnu.org/licenses/lgpl-3.0.html
-
-#!/usr/bin/env python
 
 import argparse
 
@@ -39,11 +38,12 @@ args = parser.parse_args()
 groove = groove()
 downloader = downloader(groove)
 
-if (args.playlist_id != None):
+if (args.search_playlist != None):
     #Initiliaze token
     groove.getToken()
-    playlist = groove.getPlaylistByID(args.playlist_id)
-    downloader.downloadPlaylist(playlist["result"]["Name"], playlist["result"]["Songs"])
+    playlist = groove.getPlaylistByID(args.search_playlist)
+    downloader.downloadPlaylist(playlist["Name"], playlist["Songs"])
+    print "All songs have been download"
 else:
     type = None
     query = None
@@ -63,7 +63,9 @@ else:
     if (type != None and query != None):
         #Initiliaze token
         groove.getToken()
-        print groove.getResultsFromSearch(query, type)
+        downloader.prepareSongs(query, type)
+        downloader.downloadQueue()
+        print "All songs have been download"
     else:
-        print "Nothing to do"
+        parser.print_help()
 
