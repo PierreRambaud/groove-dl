@@ -102,7 +102,7 @@ class downloader:
                     self.waitForNext(idx, self.queue)
 
     def waitForNext(self, idx, songs):
-        if (idx < len(songs)):
+        if (idx + 1 < len(songs)):
             #Wait for next download
             print "Wait for next download"
             time.sleep(self.sleepTime)
