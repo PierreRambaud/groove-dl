@@ -38,10 +38,10 @@ args = parser.parse_args()
 groove = groove()
 downloader = downloader(groove)
 
-if (args.search_playlist != None):
+if (args.playlist_id != None):
     #Initiliaze token
     groove.getToken()
-    playlist = groove.getPlaylistByID(args.search_playlist)
+    playlist = groove.getPlaylistByID(args.playlist_id)
     downloader.downloadPlaylist(playlist["Name"], playlist["Songs"])
     print "All songs have been download"
 else:
