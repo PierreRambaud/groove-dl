@@ -80,7 +80,7 @@ class downloader:
             result = None
             songName = ('%d - Album: %sSong: %s - %s' % (idx, song['AlbumName'].ljust(40), song['ArtistName'], song['SongName']))
             print songName
-            if (idx != 0 and idx % 10 == 0):
+            if ((idx != 0 and idx % 10 == 0) or idx == len(songs) - 1):
                 while (result not in ["n", "q"]):
                     result = raw_input('Press "n" for next, "Number" for song id, "q" for quit and download songs: ')
                     if (result.isdigit()):
@@ -90,6 +90,23 @@ class downloader:
 
             if (result == "q"):
                 break;
+            elif (result == "n"):
+                continue
+
+    def preparePlaylist(self, query, type):
+        playlists = self.groove.getResultsFromSearch(query, type)
+        for idx, playlist in enumerate(playlists):
+            result = None
+            playlistName = ('%d - Playlist: %sAuthor: %s' % (idx, playlist['Name'].ljust(40), playlist['FName']))
+            print playlistName
+            if ((idx != 0 and idx % 10 == 0) or idx == len(playlists) - 1):
+                while (result not in ["n", "q"]):
+                    result = raw_input('Press "n" for next, "Number" for playlist id: ')
+                    if (result.isdigit()):
+                        if (int(result) >= 0 and int(result) <= len(playlists)):
+                            self.queue.append(playlists[int(result)])
+                            print "Playlist will be downloaded"
+                            break;
             elif (result == "n"):
                 continue
 

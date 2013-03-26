@@ -61,11 +61,17 @@ else:
         query = args.search_playlist
 
     if (type != None and query != None):
-        #Initiliaze token
         groove.getToken()
-        downloader.prepareSongs(query, type)
-        downloader.downloadQueue()
-        print "All songs have been download"
+        if (type =='Playlists'):
+            downloader.preparePlaylist(query, type)
+            for playlist in downloader.queue:
+                playlist = groove.getPlaylistByID(playlist['PlaylistID'])
+                downloader.downloadPlaylist(playlist["Name"], playlist["Songs"])
+        else:
+            #Initiliaze token
+            downloader.prepareSongs(query, type)
+            downloader.downloadQueue()
+            print "All songs have been download"
     else:
         parser.print_help()
 
