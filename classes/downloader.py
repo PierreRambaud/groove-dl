@@ -59,7 +59,7 @@ class downloader:
         cmd = wget + " 2>&1 | grep --line-buffered \"%\" | sed -u -e \"s,\.,,g\" | awk '{printf(\"\b\b\b\b%4s\", $2)}'"
         process = subprocess.Popen(cmd, shell=True)
         #Starts a timer that reports the song as being played for over 30-35 seconds. May not be needed.
-        markTimer = threading.Timer(30 + random.randint(0,5), self.groove.markStreamKeyOver30Seconds, [song["SongID"], self.getQueueID(), stream["ip"], stream["streamKey"]]) 
+        markTimer = threading.Timer(30 + random.randint(0,5), self.groove.markStreamKeyOver30Seconds, [song["SongID"], self.getQueueID(), stream["ip"], stream["streamKey"]])
         markTimer.start()
         try:
             #Wait for wget to finish
@@ -93,7 +93,7 @@ class downloader:
             elif (result == "n"):
                 continue
 
-    def preparePlaylist(self, query, type):
+    def preparePlaylists(self, query, type):
         playlists = self.groove.getResultsFromSearch(query, type)
         for idx, playlist in enumerate(playlists):
             result = None
@@ -101,12 +101,14 @@ class downloader:
             print playlistName
             if ((idx != 0 and idx % 10 == 0) or idx == len(playlists) - 1):
                 while (result not in ["n", "q"]):
-                    result = raw_input('Press "n" for next, "Number" for playlist id: ')
+                    result = raw_input('Press "n" for next, "Number" for playlist id, "q" for quit and download playlists: ')
                     if (result.isdigit()):
                         if (int(result) >= 0 and int(result) <= len(playlists)):
                             self.queue.append(playlists[int(result)])
                             print "Playlist will be downloaded"
-                            break;
+
+            if (result == "q"):
+                break;
             elif (result == "n"):
                 continue
 
@@ -121,6 +123,7 @@ class downloader:
     def waitForNext(self, idx, songs):
         if (idx + 1 < len(songs)):
             #Wait for next download
+            print ""
             print "Wait for next download"
             time.sleep(self.sleepTime)
 

@@ -63,7 +63,7 @@ else:
     if (type != None and query != None):
         groove.getToken()
         if (type =='Playlists'):
-            downloader.preparePlaylist(query, type)
+            downloader.preparePlaylists(query, type)
             for playlist in downloader.queue:
                 playlist = groove.getPlaylistByID(playlist['PlaylistID'])
                 downloader.downloadPlaylist(playlist["Name"], playlist["Songs"])
