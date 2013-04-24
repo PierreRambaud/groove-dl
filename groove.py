@@ -19,12 +19,12 @@
 
 import argparse
 
-from classes.groove import groove
+from classes.connector import connector
 from classes.downloader import downloader
 
 descriptionString = \
 """A Grooveshark song downloader
-by Pierre Rambaud <http://rambaudpierre.fr>
+by Pierre Rambaud <http://pierrerambaud.com>
 """
 parser = argparse.ArgumentParser(description=descriptionString)
 parser.add_argument("-p", "--playlist-id", help="Playlist id", type=int)
@@ -35,13 +35,13 @@ parser.add_argument("-sp", "--search-playlist", help="Search playlists", type=st
 
 args = parser.parse_args()
 
-groove = groove()
-downloader = downloader(groove)
+connector = connector()
+downloader = downloader(connector)
 
 if (args.playlist_id != None):
     #Initiliaze token
-    groove.getToken()
-    playlist = groove.getPlaylistByID(args.playlist_id)
+    connector.getToken()
+    playlist = connector.getPlaylistByID(args.playlist_id)
     downloader.downloadPlaylist(playlist["Name"], playlist["Songs"])
     print "All songs have been download"
 else:
@@ -61,11 +61,11 @@ else:
         query = args.search_playlist
 
     if (type != None and query != None):
-        groove.getToken()
+        connector.getToken()
         if (type =='Playlists'):
             downloader.preparePlaylists(query, type)
             for playlist in downloader.queue:
-                playlist = groove.getPlaylistByID(playlist['PlaylistID'])
+                playlist = connector.getPlaylistByID(playlist['PlaylistID'])
                 downloader.downloadPlaylist(playlist["Name"], playlist["Songs"])
         else:
             #Initiliaze token

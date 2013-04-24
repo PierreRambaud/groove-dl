@@ -27,7 +27,7 @@ import json
 import gzip
 import os
 
-class groove:
+class connector:
     #Grooveshark url
     url = 'grooveshark.com'
     #Static headers

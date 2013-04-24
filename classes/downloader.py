@@ -25,16 +25,16 @@ import time
 class downloader:
     #Current directory
     currentDirectory = None
-    #Groove
-    groove = None
+    #Connector
+    connector = None
     #song in queue
     queue = []
     #Time between download
-    sleepTime = 10
+    sleepTime = 45
 
-    def __init__(self, groove):
+    def __init__(self, connector):
         self.currentDirectory = os.getcwd()
-        self.groove = groove
+        self.connector = connector
 
     def downloadPlaylist(self, name, songs):
         playlistDirectory = self.currentDirectory + '/playlists/' + name
@@ -50,7 +50,7 @@ class downloader:
     def downloadSong(self, song, filename):
         print ('Download %s' % (filename))
         #Get the StreamKey for the selected song
-        stream = self.groove.getStreamKeyFromSongIDEx(song["SongID"])
+        stream = self.connector.getStreamKeyFromSongIDEx(song["SongID"])
         if stream == []:
             print "Failed"
             return
@@ -59,7 +59,7 @@ class downloader:
         cmd = wget + " 2>&1 | grep --line-buffered \"%\" | sed -u -e \"s,\.,,g\" | awk '{printf(\"\b\b\b\b%4s\", $2)}'"
         process = subprocess.Popen(cmd, shell=True)
         #Starts a timer that reports the song as being played for over 30-35 seconds. May not be needed.
-        markTimer = threading.Timer(30 + random.randint(0,5), self.groove.markStreamKeyOver30Seconds, [song["SongID"], self.getQueueID(), stream["ip"], stream["streamKey"]])
+        markTimer = threading.Timer(30 + random.randint(0,5), self.connector.markStreamKeyOver30Seconds, [song["SongID"], self.getQueueID(), stream["ip"], stream["streamKey"]])
         markTimer.start()
         try:
             #Wait for wget to finish
@@ -75,7 +75,7 @@ class downloader:
         return str(random.randint(10000000000000000000000,99999999999999999999999))
 
     def prepareSongs(self, query, type):
-        songs = self.groove.getResultsFromSearch(query, type)
+        songs = self.connector.getResultsFromSearch(query, type)
         for idx, song in enumerate(songs):
             result = None
             songName = ('%d - Album: %sSong: %s - %s' % (idx, song['AlbumName'].ljust(40), song['ArtistName'], song['SongName']))
@@ -94,7 +94,7 @@ class downloader:
                 continue
 
     def preparePlaylists(self, query, type):
-        playlists = self.groove.getResultsFromSearch(query, type)
+        playlists = self.connector.getResultsFromSearch(query, type)
         for idx, playlist in enumerate(playlists):
             result = None
             playlistName = ('%d - Playlist: %sAuthor: %s' % (idx, playlist['Name'].ljust(40), playlist['FName']))
