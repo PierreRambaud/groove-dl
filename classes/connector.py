@@ -33,9 +33,9 @@ class connector:
     #Static headers
     headers = {}
     #Contains all the information posted with the htmlshark client
-    htmlClient = ('htmlshark', '20120312', 'reallyHotSauce', {"User-Agent":"Mozilla/5.0 (X11; Linux x86_64; rv:10.0.12) Gecko/20100101 Firefox/10.0.12 Iceweasel/10.0.12", "Content-Type":"application/json", "Accept-Encoding":"gzip"})
+    htmlClient = ('htmlshark', '20130520', 'nuggetsOfBaller', {"User-Agent":"Mozilla/5.0 (X11; Linux x86_64; rv:10.0.12) Gecko/20100101 Firefox/10.0.12 Iceweasel/10.0.12", "Content-Type":"application/json", "Accept-Encoding":"gzip"})
     #Js queue
-    jsqueue = ['jsqueue', '20120312.08', 'circlesAndSquares']
+    jsqueue = ['jsqueue', '20130520', 'chickenFingers']
     #Token
     token = None
 
