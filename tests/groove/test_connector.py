@@ -75,6 +75,10 @@ class TestConnector(unittest.TestCase):
             ignore_token=True
         )
 
+    def test_get_token_with_error_should_raise(self):
+        self.mock_client(side_effect=Exception('foo'))
+        self.assertRaises(Exception, lambda: self.connector.get_token())
+
     def test_get_playlist_from_id(self):
         self.connector.token = self.default_token
         response = {
@@ -128,6 +132,11 @@ class TestConnector(unittest.TestCase):
             "getPlaylistByID",
             {"playlistID": 91786079}
         )
+
+    def test_get_playlist_from_id_with_error_should_raise(self):
+        self.connector.token = self.default_token
+        self.mock_client(side_effect=Exception('foo'))
+        self.assertRaises(Exception, lambda: self.connector.get_playlist_from_id(91786079))
 
     def test_search(self):
         response = {
@@ -229,6 +238,11 @@ class TestConnector(unittest.TestCase):
             {"type": "Songs", "query": "CruciA"}
         )
 
+    def test_search_with_error_should_raise(self):
+        self.connector.token = self.default_token
+        self.mock_client(side_effect=Exception('foo'))
+        self.assertRaises(Exception, lambda: self.connector.search("CruciA", "Fake"))
+
     def test_get_stream_key(self):
         response = {
             "result": {
@@ -268,8 +282,13 @@ class TestConnector(unittest.TestCase):
             }
         )
 
-    def mock_client(self, client_response={}, status=200, **kwargs):
-        response = Mock()
+    def test_get_stream_key_with_error_should_raise(self):
+        self.connector.token = self.default_token
+        self.mock_client(side_effect=Exception('foo'))
+        self.assertRaises(Exception, lambda: self.connector.get_stream_key_from_song_id(1337))
+
+    def mock_client(self, client_response={}, status=200, side_effect=None, **kwargs):
+        response = Mock(side_effect=side_effect)
         response.status.return_value = status
         read = Mock()
         read.decode.return_value = json.dumps(client_response)

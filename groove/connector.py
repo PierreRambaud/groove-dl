@@ -89,7 +89,7 @@ class Connector:
                 self.token = response["result"]
             except Exception as inst:
                 print("Unexpected error:", sys.exc_info()[0])
-                raise
+                raise inst
 
         return self.token
 
@@ -117,7 +117,7 @@ class Connector:
             return response["result"]
         except Exception as inst:
             print("Unexpected error:", sys.exc_info()[0])
-            raise
+            raise inst
 
     """
         This method searches for a song using a provided search term
@@ -149,7 +149,7 @@ class Connector:
             return response["result"]["result"]
         except Exception as inst:
             print("Unexpected error:", sys.exc_info()[0])
-            raise
+            raise inst
 
     """
         Get the streamKey needed to request the download link to the MP3
@@ -181,7 +181,7 @@ class Connector:
             return response["result"]
         except Exception as inst:
             print("Unexpected error:", sys.exc_info()[0])
-            raise
+            raise inst
 
     """
         Return request default options
@@ -203,18 +203,14 @@ class Connector:
         Execute query
     """
     def __execute_query__(self, url, parameters, userAgent):
-        try:
-            self.client.request(
-                "POST",
-                url,
-                json.JSONEncoder().encode(parameters),
-                userAgent
-            )
-            response = self.client.getresponse().read()
-            return json.JSONDecoder().decode(response.decode(self.encoding))
-        except Exception as inst:
-            print("Unexpected error:", sys.exc_info()[0])
-            raise
+        self.client.request(
+            "POST",
+            url,
+            json.JSONEncoder().encode(parameters),
+            userAgent
+        )
+        response = self.client.getresponse().read()
+        return json.JSONDecoder().decode(response.decode(self.encoding))
 
     """
     Prepare token
