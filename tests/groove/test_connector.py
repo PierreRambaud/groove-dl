@@ -13,8 +13,7 @@ class TestConnector(unittest.TestCase):
 
     def setUp(self):
         self.client = Mock()
-        c = Connector(self.client)
-        self.connector = c
+        self.connector = Connector(self.client)
 
     def tearDown(self):
         self.client = None
