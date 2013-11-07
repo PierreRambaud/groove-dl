@@ -136,7 +136,10 @@ class TestConnector(unittest.TestCase):
     def test_get_playlist_from_id_with_error_should_raise(self):
         self.connector.token = self.default_token
         self.mock_client(side_effect=Exception('foo'))
-        self.assertRaises(Exception, lambda: self.connector.get_playlist_from_id(91786079))
+        self.assertRaises(
+            Exception,
+            lambda: self.connector.get_playlist_from_id(91786079)
+        )
 
     def test_search(self):
         response = {
@@ -241,13 +244,17 @@ class TestConnector(unittest.TestCase):
     def test_search_with_error_should_raise(self):
         self.connector.token = self.default_token
         self.mock_client(side_effect=Exception('foo'))
-        self.assertRaises(Exception, lambda: self.connector.search("CruciA", "Fake"))
+        self.assertRaises(
+            Exception,
+            lambda: self.connector.search("CruciA", "Fake")
+        )
 
     def test_get_stream_key(self):
         response = {
             "result": {
                 "ts": 1383778597,
-                "streamKey": "f168a9015788077db5b16913fb18d10ae3f1603d_527ad02d_21b641b_2846ffc_0_9_8",
+                "streamKey": "f168a9015788077db5b16913fb18d10ae3f"
+                             "1603d_527ad02d_21b641b_2846ffc_0_9_8",
                 "FileID": "42233852",
                 "uSecs": "221000000",
                 "ip": "stream79b.grooveshark.com",
@@ -285,9 +292,18 @@ class TestConnector(unittest.TestCase):
     def test_get_stream_key_with_error_should_raise(self):
         self.connector.token = self.default_token
         self.mock_client(side_effect=Exception('foo'))
-        self.assertRaises(Exception, lambda: self.connector.get_stream_key_from_song_id(1337))
+        self.assertRaises(
+            Exception,
+            lambda: self.connector.get_stream_key_from_song_id(1337)
+        )
 
-    def mock_client(self, client_response={}, status=200, side_effect=None, **kwargs):
+    def mock_client(
+        self,
+        client_response={},
+        status=200,
+        side_effect=None,
+        **kwargs
+    ):
         response = Mock(side_effect=side_effect)
         response.status.return_value = status
         read = Mock()

@@ -124,7 +124,8 @@ class Connector:
 
         Parameters:
             query: the search query
-            type: the search type (types are 'Songs', 'Artists', 'Albums' or 'Playlists')
+            type: the search type
+                (types are 'Songs', 'Artists', 'Albums' or 'Playlists')
     """
     def search(self, query, type="Songs"):
         haystack = ["Songs", "Artists", "Albums", "Playlists"]
