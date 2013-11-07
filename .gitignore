@@ -1,5 +1,9 @@
 dist
 Groove_dl.egg-info
+build/*
+.coverage
+
+*.pyc
 
 .project
 .pydevproject
