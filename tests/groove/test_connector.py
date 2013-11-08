@@ -72,7 +72,7 @@ class TestConnector(unittest.TestCase):
         )
 
     def test_get_token_with_error_should_raise(self):
-        self.mock_client(side_effect=Exception('foo'))
+        self.mock_client(side_effect=Exception("foo"))
         self.assertRaises(Exception, lambda: self.connector.get_token())
 
     def test_get_playlist_from_id(self):
@@ -90,7 +90,7 @@ class TestConnector(unittest.TestCase):
 
     def test_get_playlist_from_id_with_error_should_raise(self):
         self.connector.token = self.default_token
-        self.mock_client(side_effect=Exception('foo'))
+        self.mock_client(side_effect=Exception("foo"))
         self.assertRaises(
             Exception,
             lambda: self.connector.get_playlist_from_id(91786079)
@@ -115,7 +115,7 @@ class TestConnector(unittest.TestCase):
 
     def test_search_with_error_should_raise(self):
         self.connector.token = self.default_token
-        self.mock_client(side_effect=Exception('foo'))
+        self.mock_client(side_effect=Exception("foo"))
         self.assertRaises(
             Exception,
             lambda: self.connector.search("CruciA", "Fake")
@@ -142,7 +142,7 @@ class TestConnector(unittest.TestCase):
 
     def test_get_stream_key_with_error_should_raise(self):
         self.connector.token = self.default_token
-        self.mock_client(side_effect=Exception('foo'))
+        self.mock_client(side_effect=Exception("foo"))
         self.assertRaises(
             Exception,
             lambda: self.connector.get_stream_key_from_song_id(1337)
