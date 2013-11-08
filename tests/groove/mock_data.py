@@ -8,6 +8,7 @@ def response_token():
         "result": "429897a7b29bcf01ac0b0483ffe7a7b3b2a49023"
     }
 
+
 def response_get_playlist():
     return {
         "header": {
@@ -50,6 +51,7 @@ def response_get_playlist():
             "Username": "RAMBAUD PIERRE"
         }
     }
+
 
 def response_search():
     return {
@@ -135,6 +137,7 @@ def response_search():
             ]
         }
     }
+
 
 def response_get_stream_key():
     return {
