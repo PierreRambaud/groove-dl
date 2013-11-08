@@ -8,7 +8,7 @@ from distutils.core import Command
 from subprocess import call
 
 
-class TestCommand(Command):
+class NoseCommand(Command):
     description = "run test suite"
     user_options = []
 
@@ -74,6 +74,6 @@ setup(
         ],
     cmdclass={
         "pep8": Pep8Command,
-        "test": TestCommand
+        "nose": NoseCommand
         },
     )
