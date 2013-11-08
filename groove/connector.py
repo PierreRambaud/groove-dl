@@ -40,10 +40,10 @@ class Connector:
         }
     )
 
-    """
-        Initiliaze Connector with session and uuid
-    """
     def __init__(self, client=None):
+        """
+            Initiliaze Connector with session and uuid
+        """
         if client is not None:
             self.client = client
         else:
@@ -72,11 +72,11 @@ class Connector:
             }
         )
 
-    """
-        This method retrieves the local token for the session
-        which is used to generate tokens for each request.
-    """
     def get_token(self):
+        """
+            This method retrieves the local token for the session
+            which is used to generate tokens for each request.
+        """
         if (self.token is None):
             options = self.__get_request_options__()
             options["method"] = "getCommunicationToken"
@@ -93,13 +93,13 @@ class Connector:
 
         return self.token
 
-    """
-        Get playlist songs from playlist id
-
-        Parameters:
-            playlist_id: the playlist id
-    """
     def get_playlist_from_id(self, playlist_id):
+        """
+            Get playlist songs from playlist id
+
+            Parameters:
+                playlist_id: the playlist id
+        """
         options = self.__get_request_options__()
         options["method"] = "getPlaylistByID"
         options["parameters"]["playlistID"] = playlist_id
@@ -119,15 +119,15 @@ class Connector:
             print("Unexpected error:", sys.exc_info()[0])
             raise inst
 
-    """
-        This method searches for a song using a provided search term
-
-        Parameters:
-            query: the search query
-            type: the search type
-                (types are 'Songs', 'Artists', 'Albums' or 'Playlists')
-    """
     def search(self, query, type="Songs"):
+        """
+            This method searches for a song using a provided search term
+
+            Parameters:
+                query: the search query
+                type: the search type
+                    (types are 'Songs', 'Artists', 'Albums' or 'Playlists')
+        """
         haystack = ["Songs", "Artists", "Albums", "Playlists"]
         if (type not in haystack):
             type = "Songs"
@@ -152,13 +152,13 @@ class Connector:
             print("Unexpected error:", sys.exc_info()[0])
             raise inst
 
-    """
-        Get the streamKey needed to request the download link to the MP3
-
-        Parameters:
-            song_id: the songID of the song you want to download.
-    """
     def get_stream_key_from_song_id(self, song_id):
+        """
+            Get the streamKey needed to request the download link to the MP3
+
+            Parameters:
+                song_id: the songID of the song you want to download.
+        """
         options = self.__get_request_options__()
         options["parameters"]["type"] = 8
         options["parameters"]["mobile"] = False
@@ -184,10 +184,10 @@ class Connector:
             print("Unexpected error:", sys.exc_info()[0])
             raise inst
 
-    """
-        Return request default options
-    """
     def __get_request_options__(self):
+        """
+            Return request default options
+        """
         options = {}
         options["parameters"] = {}
         options["parameters"]["secretKey"] = hashlib.md5(
@@ -200,10 +200,14 @@ class Connector:
 
         return options
 
-    """
-        Execute query
-    """
     def __execute_query__(self, url, parameters, userAgent):
+        """
+            Execute query
+            Parameters:
+                url: Request url
+                parameters: All requests parameters (headers, raw data, etc...)
+                userAgent: the user agent
+        """
         self.client.request(
             "POST",
             url,
@@ -213,10 +217,13 @@ class Connector:
         response = self.client.getresponse().read()
         return json.JSONDecoder().decode(response.decode(self.encoding))
 
-    """
-    Prepare token
-    """
     def __prepare_token__(self, method, secret):
+        """
+            Prepare token
+            Parameters:
+                method: Method name.
+                secret: the secret key
+        """
         rnd = ("".join(
             random.choice(string.hexdigits) for x in range(6)
         )).lower()
