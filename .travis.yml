@@ -2,6 +2,6 @@ language: python
 python:
   - "3.2"
   - "3.3"
-script: ./setup.py tests
+script: python setup.py tests
 
 
