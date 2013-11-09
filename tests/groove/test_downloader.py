@@ -21,8 +21,8 @@ class testDownloader(unittest.TestCase):
         self.path = os.path.dirname(os.path.realpath(__file__))
         self.downloader = Downloader(
             self.connector,
-            self.subprocess,
-            self.path
+            self.path,
+            self.subprocess
         )
 
     def tearDown(self):

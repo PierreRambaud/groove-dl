@@ -12,7 +12,7 @@ class Downloader:
     songs_queue = None
     max_per_list = 10
 
-    def __init__(self, connector, subprocess, output_directory):
+    def __init__(self, connector, output_directory, subprocess=None):
         """
             Initiliaze Downloader
 
@@ -21,6 +21,12 @@ class Downloader:
                 subprocess: spawn new processes
                 output_directory: where files will be downloaded
         """
+        if subprocess is not None:
+            self.subprocess = subprocess
+        else:
+            import subprocess
+            self.subprocess = subprocess
+
         self.output_directory = output_directory
         self.connector = connector
         self.subprocess = subprocess
