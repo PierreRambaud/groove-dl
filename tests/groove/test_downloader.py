@@ -103,6 +103,7 @@ class testDownloader(unittest.TestCase):
         self.downloader.max_per_list = 1
         self.downloader.prepare(query, type)
         self.connector.search.assert_called_once_with(query, type)
+        self.assertEquals(len(self.downloader.songs_queue), 2)
 
         self.assertEquals(
             sys.stdout.getvalue().strip(),
