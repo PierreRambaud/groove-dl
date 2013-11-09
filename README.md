@@ -1,5 +1,7 @@
 Grooveshark song downloader
 
+[![Build Status](https://travis-ci.org/PierreRambaud/groove-dl.png?branch=develop)](https://travis-ci.org/PierreRambaud/groove-dl)
+
 ##Supported python version
 
 This tool was test with python `3.3.2`.
