@@ -72,9 +72,9 @@ setup(
     packages=["groove"],
     install_requires=[],
     tests_require=[
-            u"mock",
-            u"nose",
-            u"pep8"
+            "mock",
+            "nose",
+            "pep8"
         ],
     cmdclass={
         "pep8": Pep8Command,
