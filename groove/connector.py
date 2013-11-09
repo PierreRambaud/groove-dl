@@ -42,7 +42,10 @@ class Connector:
 
     def __init__(self, client=None):
         """
-            Initiliaze Connector with session and uuid
+            Initiliaze Connector
+
+            Parameters:
+                client: the http client
         """
         if client is not None:
             self.client = client
