@@ -1,4 +1,4 @@
-Grooveshark song downloader
+#Grooveshark song downloader
 
 [![Build Status](https://travis-ci.org/PierreRambaud/groove-dl.png?branch=develop)](https://travis-ci.org/PierreRambaud/groove-dl)
 
