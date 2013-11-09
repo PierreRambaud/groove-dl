@@ -1,0 +1,82 @@
+#!/usr/bin/env python
+import argparse
+import os
+
+from groove import Connector
+from groove import Downloader
+
+
+def __parser__():
+    description = \
+        """
+            A Grooveshark song downloader
+            by Pierre Rambaud <https://github.com/PierreRambaud/groove-dl>
+        """
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument(
+        "-p", "--playlist-id", help="Playlist id", type=int
+    )
+    parser.add_argument(
+        "-o", "--output", help="Output directory", type=str
+    )
+    parser.add_argument(
+        "-ss", "--search-song", help="Search songs", type=str
+    )
+    parser.add_argument(
+        "-sa", "--search-artist", help="Search artists", type=str
+    )
+    parser.add_argument(
+        "-sA", "--search-album", help="Search albums", type=str
+    )
+    parser.add_argument(
+        "-sp", "--search-playlist", help="Search playlists", type=str
+    )
+
+    return parser
+
+
+def main():
+    parser = __parser__()
+    args = parser.parse_args()
+    if (args.output is None):
+        args.output = os.path.dirname(os.path.realpath(__file__)) + "/songs"
+
+    connector = Connector()
+    downloader = Downloader(connector, args.output)
+
+    if (args.playlist_id is not None):
+        #Initiliaze token
+        connector.get_token()
+        playlist = connector.get_playlist_by_id(args.playlist_id)
+        downloader.download_playlist(playlist["Name"], playlist["Songs"])
+        print("All songs have been download")
+    else:
+        type = None
+        query = None
+        if (args.search_song is not None):
+            type = 'Songs'
+            query = args.search_song
+        elif (args.search_artist is not None):
+            type = 'Artists'
+            query = args.search_artist
+        elif (args.search_album is not None):
+            type = 'Albums'
+            query = args.search_album
+        elif (args.search_playlist is not None):
+            type = 'Playlists'
+            query = args.search_playlist
+
+        if (type is not None and query is not None):
+            connector.get_token()
+            downloader.prepare(query, type)
+            if (type == 'Playlists'):
+                downloader.download_playlist()
+            else:
+                downloader.download()
+
+            print("All songs have been download")
+        else:
+            parser.print_help()
+
+if __name__ == "__main__":
+    main()

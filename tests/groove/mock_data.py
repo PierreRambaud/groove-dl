@@ -66,6 +66,7 @@ def response_search():
             "askForSuggestion": False,
             "result": [
                 {
+                    "SongID": "1337",
                     "ArtistName": "crucia",
                     "Popularity": 1324200092,
                     "ArtistCoverArtFilename": "",
@@ -89,6 +90,7 @@ def response_search():
                     "IsLowBitrateAvailable": "1"
                 },
                 {
+                    "SongID": "1337",
                     "ArtistName": "CruicA",
                     "Popularity": 1324200092,
                     "ArtistCoverArtFilename": "",
@@ -112,6 +114,7 @@ def response_search():
                     "IsLowBitrateAvailable": "0"
                 },
                 {
+                    "SongID": "1337",
                     "ArtistName": "CruciA",
                     "Popularity": 1324200066,
                     "ArtistCoverArtFilename": "",
@@ -136,6 +139,35 @@ def response_search():
                 }
             ]
         }
+    }
+
+
+def response_search_playlist():
+    return {
+        "header": {
+            "session": "98b040dffe126a40354e0469572746f3",
+            "serviceVersion": "20100903",
+            "prefetchEnabled": True
+        },
+        "result": [
+            {
+                'About': '',
+                'Username': '',
+                'Artists': '',
+                'Name': 'CruciAGoT  ',
+                'LName': '',
+                'Picture': '9279288.jpg',
+                'FName': 'RAMBAUD PIERRE  ',
+                'Score': 205442.35021064,
+                'NumSongs': '41',
+                'SphinxSortExpr': 0,
+                'PlaylistID': '91786079',
+                'IsDeleted': '0',
+                'NumArtists': '1',
+                'UserID': '6696298',
+                'TSAdded': '0'
+            }
+        ]
     }
 
 

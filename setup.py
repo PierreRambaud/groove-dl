@@ -65,7 +65,11 @@ setup(
     name="Groove-dl",
     version="0.1",
     description="Grooveshark song downloader",
-    author="Pierre Rambaud",
+    author="Pierre Rambaud (GoT)",
+    url="https://github.com/PierreRambaud/groove-dl",
+    license="GPLv3",
+    scripts=["groove-dl"],
+    packages=["groove"],
     install_requires=[],
     tests_require=[
             u"mock",

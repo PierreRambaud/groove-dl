@@ -3,6 +3,8 @@ import os
 import sys
 
 from .mock_data import response_search
+from .mock_data import response_get_playlist
+from .mock_data import response_search_playlist
 from groove import Downloader
 from mock import Mock
 from mock import MagicMock
@@ -29,11 +31,19 @@ class testDownloader(unittest.TestCase):
         self.client = None
         self.connector = None
 
+    def test_init_without_process(self):
+        self.connector = Mock()
+        self.path = os.path.dirname(os.path.realpath(__file__))
+        self.downloader = Downloader(
+            self.connector,
+            self.path
+        )
+
     def test_init_should_defined_config(self):
         self.assertIsInstance(self.downloader.connector, Mock)
         self.assertIsInstance(self.downloader.subprocess, Mock)
         self.assertEquals(self.path, self.downloader.output_directory)
-        self.assertEquals([], self.downloader.songs_queue)
+        self.assertEquals([], self.downloader.download_queue)
         self.assertEquals(10, self.downloader.max_per_list)
 
     def test_download_song_without_stream_key(self):
@@ -64,14 +74,27 @@ class testDownloader(unittest.TestCase):
         self.connector.get_stream_key_from_song_id.assert_called_once_with(1)
         self.subprocess.Popen.assert_called_once_with(
             "wget --progress=dot --post-data=streamKey=DatKey "
-            "-0 \"filename.mp3\" \"http://127.0.0.1/stream.php\" "
-            "2>&1 | grep --line-buffered \"%\" | "
+            "-O \"filename.mp3\" \"http://127.0.0.1/stream.php\" "
+            "2>&1 | grep --line-buffered \"%\" |"
             "sed -u -e \"s,\.,,g\" | awk '{printf(\"\b\b\b\b%4s\", $2)}'",
             shell=True
         )
 
         process.wait.assert_called_once_with()
         self.assertTrue(result)
+
+    def test_download_playlist(self):
+        self.downloader.download_queue = [{"PlaylistID": 1}]
+        self.connector.get_stream_key_from_song_id.return_value = []
+        response = response_search_playlist()
+        self.connector.search.return_value = response["result"]
+        response = response_get_playlist()
+        self.connector.get_playlist_from_id.return_value = response["result"]
+        self.downloader.download_playlist()
+        self.assertEquals(
+            self.downloader.download_queue,
+            response["result"]["Songs"]
+        )
 
     @patch("os.remove", Mock(return_value=None))
     def test_download_song_with_error_should_exit(self):
@@ -103,7 +126,7 @@ class testDownloader(unittest.TestCase):
         self.downloader.max_per_list = 1
         self.downloader.prepare(query, type)
         self.connector.search.assert_called_once_with(query, type)
-        self.assertEquals(len(self.downloader.songs_queue), 2)
+        self.assertEquals(len(self.downloader.download_queue), 2)
 
         self.assertEquals(
             sys.stdout.getvalue().strip(),
@@ -111,15 +134,38 @@ class testDownloader(unittest.TestCase):
             "      Song: crucia - shadow battle\n"
             "1 - Album: CruciA                            "
             "      Song: CruicA - Air Raid\n"
-            "Song shadow battle added\n"
+            "shadow battle added\n"
             "2 - Album: youtube                           "
             "      Song: CruciA - Lie 2 Me\n"
-            "Song Lie 2 Me added"
+            "Lie 2 Me added"
         )
         input.assert_called_with(
-            "Press \"n\" for next, "
-            "\"Number\" for song id, "
-            "\"q\" for quit and download songs: "
+            "Press \"n\" for next page, "
+            "\"Number id\" to add element in queue, "
+            "\"q\" for quit and download: "
+        )
+
+    @patch("builtins.input",
+           Mock(side_effect=["0", "n", "q"]))
+    def test_prepare_playlist(self):
+        query = "CruciA"
+        type = "Playlists"
+        response = response_search_playlist()
+        self.connector.search.return_value = response["result"]
+        self.downloader.max_per_list = 1
+        self.downloader.prepare(query, type)
+        self.assertEquals(len(self.downloader.download_queue), 1)
+
+        self.assertEquals(
+            sys.stdout.getvalue().strip(),
+            "0 - Playlist: CruciAGoT                               "
+            "Author: RAMBAUD PIERRE   with 41 songs\n"
+            "CruciAGoT"
+        )
+        input.assert_called_with(
+            "Press \"n\" for next page, "
+            "\"Number id\" to add element in queue, "
+            "\"q\" for quit and download: "
         )
 
     @patch("builtins.input", Mock(side_effect=["0", "n", "2", "q"]))
@@ -133,3 +179,49 @@ class testDownloader(unittest.TestCase):
             Exception,
             lambda: self.downloader.prepare(query, type)
         )
+
+    def test_download(self):
+        result = self.downloader.download()
+        self.assertFalse(result)
+        response = response_search()
+        self.connector.get_stream_key_from_song_id.return_value = []
+        self.downloader.download_queue.append(response["result"]["result"][0])
+        self.downloader.download_queue.append(response["result"]["result"][1])
+        with patch("os.path.exists", Mock(return_value=False)):
+            result = self.downloader.download()
+            os.path.exists.assert_called_any_with(
+                "%s/%s-%s.mp3" %
+                (
+                    self.downloader.output_directory,
+                    "crucia",
+                    "shadow battle"
+                )
+            )
+            os.path.exists.assert_called_any_with(
+                "%s/%s-%s.mp3" %
+                (
+                    self.downloader.output_directory,
+                    "CruciA",
+                    "Air Raid"
+                )
+            )
+            self.assertTrue(result)
+        with patch("os.path.exists", Mock(return_value=True)):
+            result = self.downloader.download()
+            os.path.exists.assert_called_any_with(
+                "%s/%s-%s.mp3" %
+                (
+                    self.downloader.output_directory,
+                    "crucia",
+                    "shadow battle"
+                )
+            )
+            os.path.exists.assert_called_any_with(
+                "%s/%s-%s.mp3" %
+                (
+                    self.downloader.output_directory,
+                    "CruciA",
+                    "Air Raid"
+                )
+            )
+            self.assertTrue(result)

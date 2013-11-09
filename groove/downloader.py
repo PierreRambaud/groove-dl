@@ -9,7 +9,7 @@ class Downloader:
     output_directory = None
     connector = None
     subprocess = None
-    songs_queue = None
+    download_queue = None
     max_per_list = 10
 
     def __init__(self, connector, output_directory, subprocess=None):
@@ -29,8 +29,19 @@ class Downloader:
 
         self.output_directory = output_directory
         self.connector = connector
-        self.subprocess = subprocess
-        self.songs_queue = []
+        self.download_queue = []
+
+    def download_playlist(self):
+        """
+            Download Playlist
+        """
+        songs = []
+        for playlist in self.download_queue:
+            plist = self.connector.get_playlist_from_id(playlist['PlaylistID'])
+            songs = songs + plist["Songs"]
+
+        self.download_queue = songs
+        self.download()
 
     def download_song(self, filename, song):
         """
@@ -48,16 +59,16 @@ class Downloader:
 
         #Run wget to download the song
         wget = "wget --progress=dot --post-data=streamKey=%s" \
-            " -0 \"%s\" \"http://%s/stream.php\"" % (
+            " -O \"%s\" \"http://%s/stream.php\"" % (
                 stream_key["streamKey"], filename, stream_key["ip"]
             )
-        cmd = wget + " 2>&1 | grep --line-buffered \"%\" | " \
+        cmd = wget + " 2>&1 | grep --line-buffered \"%\" |" \
             "sed -u -e \"s,\.,,g\" | awk '{printf(\"\b\b\b\b%4s\", $2)}'"
         process = self.subprocess.Popen(cmd, shell=True)
 
         try:
             process.wait()
-        except KeyboardInterrupt:
+        except BaseException:
             print("Download cancelled. File deleted.")
             os.remove(filename)
             return False
@@ -77,9 +88,9 @@ class Downloader:
         self.__display_raw_input__(
             result,
             type,
-            "Press \"n\" for next, "
-            "\"Number\" for song id, "
-            "\"q\" for quit and download songs: "
+            "Press \"n\" for next page, "
+            "\"Number id\" to add element in queue, "
+            "\"q\" for quit and download: "
         )
 
     def __display_raw_input__(self, result, type, input_text):
@@ -95,13 +106,23 @@ class Downloader:
         try:
             for idx, data in enumerate(result):
                 key = None
-                if (type == "Songs"):
+                if (type != "Playlists"):
                     print(
                         "%d - Album: %sSong: %s - %s" % (
                             idx,
                             data["AlbumName"].ljust(40),
                             data["ArtistName"],
                             data["SongName"]
+                            if "SongName" in data else data["Name"]
+                        )
+                    )
+                else:
+                    print(
+                        "%d - Playlist: %sAuthor: %s with %s songs" % (
+                            idx,
+                            data["Name"].ljust(40),
+                            data["FName"],
+                            data["NumSongs"]
                         )
                     )
 
@@ -116,12 +137,38 @@ class Downloader:
                         elif (key.isdigit()):
                             key = int(key)
                             if (key >= 0 and key <= len(result)):
-                                added_song = result[key]
-                                self.songs_queue.append(added_song)
-                                print("Song %s added" % added_song["SongName"])
+                                added_data = result[key]
+                                self.download_queue.append(added_data)
+                                print(
+                                    "%s added" %
+                                    added_data["SongName"]
+                                    if "SongName" in added_data
+                                    else added_data["Name"]
+                                )
                                 continue
         except StopIteration:
             pass
         except Exception as inst:
             print("Unexpected error:", sys.exc_info()[0])
             raise inst
+
+    def download(self):
+        """
+            Download files
+        """
+        if (self.download_queue != []):
+            for file in self.download_queue:
+                filename = (
+                    "%s/%s - %s.mp3" %
+                    (
+                        self.output_directory,
+                        file["ArtistName"],
+                        file["SongName"]
+                        if "SongName" in file else file["Name"]
+                    )
+                )
+
+                if (os.path.exists(filename) is not True):
+                    self.download_song(filename, file)
+            return True
+        return False
