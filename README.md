@@ -13,7 +13,7 @@ Run `setup.py install`
 ## Running tests
 
 To run unittests:
-`$ ./setup.py test`
+`$ ./setup.py nose`
 or
 `$ nosetests`
 
