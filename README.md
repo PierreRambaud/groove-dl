@@ -4,15 +4,31 @@
 
 ##Supported python version
 
-This tool was test with python `3.3.2`.
+This tool was test with python `3.2` and `3.3`.
 
 ##Installation
 
-Run `setup.py install`
+From Pypi
+
+```
+$ pip install groove-dl
+```
+
+From Github
+
+```
+$ git clone https://github.com/PierreRambaud/groove-dl.git
+$ cd groove-dl
+$ ./groove-dl --help
+```
+
 
 ## Running tests
+Install dependencies:
 
-To run unittests:
+`$ ./setup.py test`
+
+To run unit tests:
 `$ ./setup.py nose`
 or
 `$ nosetests`
