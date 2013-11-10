@@ -38,43 +38,49 @@ def __parser__():
 def main():
     parser = __parser__()
     args = parser.parse_args()
+    if (os.path.exists(args.output_dir) is False):
+        raise FileNotFoundError(
+            "%s not found" % args.output_dir
+        )
 
     connector = Connector()
-    downloader = Downloader(connector, args.output)
+    downloader = Downloader(connector, args.output_dir)
 
-    if (args.playlist_id is not None):
-        #Initiliaze token
-        connector.get_token()
-        downloader.download_playlist(args.playlist_id)
-    else:
-        type = None
-        query = None
-        if (args.search_song is not None):
-            type = 'Songs'
-            query = args.search_song
-        elif (args.search_artist is not None):
-            type = 'Artists'
-            query = args.search_artist
-        elif (args.search_album is not None):
-            type = 'Albums'
-            query = args.search_album
-        elif (args.search_playlist is not None):
-            type = 'Playlists'
-            query = args.search_playlist
-
-        if (type is not None and query is not None):
+    try:
+        if (args.playlist_id is not None):
+            #Initiliaze token
             connector.get_token()
-            downloader.prepare(query, type)
-            if (type == 'Playlists'):
-                downloader.download_playlist()
-            else:
-                downloader.download()
+            downloader.download_playlist(args.playlist_id)
+        else:
+            type = None
+            query = None
+            if (args.search_song is not None):
+                type = 'Songs'
+                query = args.search_song
+            elif (args.search_artist is not None):
+                type = 'Artists'
+                query = args.search_artist
+            elif (args.search_album is not None):
+                type = 'Albums'
+                query = args.search_album
+            elif (args.search_playlist is not None):
+                type = 'Playlists'
+                query = args.search_playlist
 
-    if (downloader.has_downloaded()):
-        print("%s songs have been downloaded" % self.downloader.download_count)
-    else:
-        parser.print_help()
+            if (type is not None and query is not None):
+                connector.get_token()
+                downloader.prepare(query, type)
+                if (type == 'Playlists'):
+                    downloader.download_playlist()
+                else:
+                    downloader.download()
 
+        if (downloader.has_downloaded()):
+            print("%d songs have been downloaded" % downloader.download_count)
+        else:
+            parser.print_help()
+    except KeyboardInterrupt as inst:
+        print("Canceled")
 
 if __name__ == "__main__":
     main()

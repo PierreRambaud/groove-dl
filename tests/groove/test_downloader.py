@@ -69,7 +69,8 @@ class testDownloader(unittest.TestCase):
         result = self.downloader.download_song("filename.mp3", {"SongID": 1})
         self.assertEquals(
             sys.stdout.getvalue().strip(),
-            "Downloading: filename.mp3"
+            "Downloading: filename.mp3\n\n"
+            "Downloaded"
         )
         self.connector.get_stream_key_from_song_id.assert_called_once_with(1)
         self.subprocess.Popen.assert_called_once_with(

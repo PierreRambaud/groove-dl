@@ -33,18 +33,22 @@ class Downloader:
         self.download_queue = []
         self.download_count = 0
 
-    def download_playlist(self, playlist_id = None):
+    def download_playlist(self, playlist_id=None):
         """
             Download Playlist
+
+            Parameters:
+                playlist_id: the playlist id
         """
         songs = []
         if (playlist_id is not None):
             plist = self.connector.get_playlist_from_id(playlist_id)
-            if ("Songs" in plist):
-                songs = plist["Songs"]
+            songs = plist["Songs"] if ("Songs" in plist) else []
         else:
             for playlist in self.download_queue:
-                plist = self.connector.get_playlist_from_id(playlist['PlaylistID'])
+                plist = self.connector.get_playlist_from_id(
+                    playlist['PlaylistID']
+                )
                 songs = songs + plist["Songs"]
 
         self.download_queue = songs
@@ -75,6 +79,7 @@ class Downloader:
 
         try:
             process.wait()
+            print("\nDownloaded")
             self.download_count += 1
         except BaseException:
             print("Download cancelled. File deleted.")
@@ -178,6 +183,8 @@ class Downloader:
 
                 if (os.path.exists(filename) is not True):
                     self.download_song(filename, file)
+                else:
+                    self.download_count += 1
             return True
         return False
 
