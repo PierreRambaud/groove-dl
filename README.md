@@ -30,3 +30,6 @@ This is just a project for learning the python language
 
 ## License
    See [LICENSE.md](LICENSE.md) file
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/PierreRambaud/groove-dl/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
