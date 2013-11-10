@@ -1,6 +1,7 @@
 dist
 Groove_dl.egg-info
 build/*
+!build/.keep
 .coverage
 songs/*
 !songs/.keep
