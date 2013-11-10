@@ -96,6 +96,17 @@ class testDownloader(unittest.TestCase):
             response["result"]["Songs"]
         )
 
+    def test_download_playlist_with_id(self):
+        self.downloader.download_queue = []
+        self.connector.get_stream_key_from_song_id.return_value = []
+        response = response_get_playlist()
+        self.connector.get_playlist_from_id.return_value = response["result"]
+        self.downloader.download_playlist(1337)
+        self.assertEquals(
+            self.downloader.download_queue,
+            response["result"]["Songs"]
+        )
+
     @patch("os.remove", Mock(return_value=None))
     def test_download_song_with_error_should_exit(self):
         self.connector.get_stream_key_from_song_id.return_value = {
@@ -225,3 +236,9 @@ class testDownloader(unittest.TestCase):
                 )
             )
             self.assertTrue(result)
+
+    def test_has_downloaded_songs(self):
+        self.assertFalse(self.downloader.has_downloaded())
+        self.test_download_song()
+        self.assertTrue(self.downloader.has_downloaded())
+        self.assertEquals(1, self.downloader.download_count)

@@ -14,10 +14,10 @@ def __parser__():
         """
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument(
-        "-p", "--playlist-id", help="Playlist id", type=int
+        "-o", "--output-dir", help="Output directory", type=str, required=True
     )
     parser.add_argument(
-        "-o", "--output", help="Output directory", type=str
+        "-p", "--playlist-id", help="Playlist id", type=int
     )
     parser.add_argument(
         "-ss", "--search-song", help="Search songs", type=str
@@ -38,8 +38,6 @@ def __parser__():
 def main():
     parser = __parser__()
     args = parser.parse_args()
-    if (args.output is None):
-        args.output = os.path.dirname(os.path.realpath(__file__)) + "/songs"
 
     connector = Connector()
     downloader = Downloader(connector, args.output)
@@ -47,9 +45,7 @@ def main():
     if (args.playlist_id is not None):
         #Initiliaze token
         connector.get_token()
-        playlist = connector.get_playlist_by_id(args.playlist_id)
-        downloader.download_playlist(playlist["Name"], playlist["Songs"])
-        print("All songs have been download")
+        downloader.download_playlist(args.playlist_id)
     else:
         type = None
         query = None
@@ -74,9 +70,11 @@ def main():
             else:
                 downloader.download()
 
-            print("All songs have been download")
-        else:
-            parser.print_help()
+    if (downloader.has_downloaded()):
+        print("%s songs have been downloaded" % self.downloader.download_count)
+    else:
+        parser.print_help()
+
 
 if __name__ == "__main__":
     main()

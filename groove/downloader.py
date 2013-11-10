@@ -10,6 +10,7 @@ class Downloader:
     connector = None
     subprocess = None
     download_queue = None
+    download_count = None
     max_per_list = 10
 
     def __init__(self, connector, output_directory, subprocess=None):
@@ -30,15 +31,21 @@ class Downloader:
         self.output_directory = output_directory
         self.connector = connector
         self.download_queue = []
+        self.download_count = 0
 
-    def download_playlist(self):
+    def download_playlist(self, playlist_id = None):
         """
             Download Playlist
         """
         songs = []
-        for playlist in self.download_queue:
-            plist = self.connector.get_playlist_from_id(playlist['PlaylistID'])
-            songs = songs + plist["Songs"]
+        if (playlist_id is not None):
+            plist = self.connector.get_playlist_from_id(playlist_id)
+            if ("Songs" in plist):
+                songs = plist["Songs"]
+        else:
+            for playlist in self.download_queue:
+                plist = self.connector.get_playlist_from_id(playlist['PlaylistID'])
+                songs = songs + plist["Songs"]
 
         self.download_queue = songs
         self.download()
@@ -68,6 +75,7 @@ class Downloader:
 
         try:
             process.wait()
+            self.download_count += 1
         except BaseException:
             print("Download cancelled. File deleted.")
             os.remove(filename)
@@ -172,3 +180,6 @@ class Downloader:
                     self.download_song(filename, file)
             return True
         return False
+
+    def has_downloaded(self):
+        return False if self.download_count == 0 else True
