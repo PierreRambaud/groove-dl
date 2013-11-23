@@ -67,7 +67,6 @@ setup(
     description="Grooveshark song downloader",
     author="Pierre Rambaud (GoT)",
     author_email="pierre.rambaud86@gmail.com",
-    description_file="README.md",
     url="https://github.com/PierreRambaud/groove-dl",
     license="GPLv3",
     scripts=["groove-dl"],
