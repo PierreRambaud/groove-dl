@@ -81,10 +81,10 @@ class Connector:
             which is used to generate tokens for each request.
         """
         if (self.token is None):
-            options = self.__get_request_options__()
+            options = self.__get_request_options()
             options["method"] = "getCommunicationToken"
             try:
-                response = self.__execute_query__(
+                response = self.__execute_query(
                     self.request_url,
                     options,
                     self.html_client[3]
@@ -103,16 +103,16 @@ class Connector:
             Parameters:
                 playlist_id: the playlist id
         """
-        options = self.__get_request_options__()
+        options = self.__get_request_options()
         options["method"] = "getPlaylistByID"
         options["parameters"]["playlistID"] = playlist_id
-        options["header"]["token"] = self.__prepare_token__(
+        options["header"]["token"] = self.__prepare_token(
             options["method"],
             self.html_client[2]
         )
 
         try:
-            response = self.__execute_query__(
+            response = self.__execute_query(
                 self.request_url,
                 options,
                 self.html_client[3]
@@ -135,17 +135,17 @@ class Connector:
         if (type not in haystack):
             type = "Songs"
 
-        options = self.__get_request_options__()
+        options = self.__get_request_options()
         options["method"] = "getResultsFromSearch"
         options["parameters"]["query"] = query
         options["parameters"]["type"] = type
-        options["header"]["token"] = self.__prepare_token__(
+        options["header"]["token"] = self.__prepare_token(
             options["method"],
             self.html_client[2]
         )
 
         try:
-            response = self.__execute_query__(
+            response = self.__execute_query(
                 self.request_url,
                 options,
                 self.html_client[3]
@@ -162,7 +162,7 @@ class Connector:
             Parameters:
                 song_id: the songID of the song you want to download.
         """
-        options = self.__get_request_options__()
+        options = self.__get_request_options()
         options["parameters"]["type"] = 8
         options["parameters"]["mobile"] = False
         options["parameters"]["prefetch"] = False
@@ -171,13 +171,13 @@ class Connector:
         options["header"]["client"] = self.js_queue[0]
         options["header"]["clientRevision"] = self.js_queue[1]
         options["method"] = "getStreamKeyFromSongIDEx"
-        options["header"]["token"] = self.__prepare_token__(
+        options["header"]["token"] = self.__prepare_token(
             options["method"],
             self.js_queue[2]
         )
 
         try:
-            response = self.__execute_query__(
+            response = self.__execute_query(
                 self.request_url,
                 options,
                 self.js_queue[3]
@@ -187,7 +187,7 @@ class Connector:
             print("Unexpected error:", sys.exc_info()[0])
             raise inst
 
-    def __get_request_options__(self):
+    def __get_request_options(self):
         """
             Return request default options
         """
@@ -203,7 +203,7 @@ class Connector:
 
         return options
 
-    def __execute_query__(self, url, parameters, userAgent):
+    def __execute_query(self, url, parameters, userAgent):
         """
             Execute query
             Parameters:
@@ -220,7 +220,7 @@ class Connector:
         response = self.client.getresponse().read()
         return json.JSONDecoder().decode(response.decode(self.encoding))
 
-    def __prepare_token__(self, method, secret):
+    def __prepare_token(self, method, secret):
         """
             Prepare token
             Parameters:

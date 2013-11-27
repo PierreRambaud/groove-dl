@@ -98,7 +98,7 @@ class Downloader:
                     (types are 'Songs', 'Artists', 'Albums' or 'Playlists')
         """
         result = self.connector.search(query, type)
-        self.__display_raw_input__(
+        self.__display_raw_input(
             result,
             type,
             "Press \"n\" for next page, "
@@ -106,7 +106,7 @@ class Downloader:
             "\"q\" for quit and download: "
         )
 
-    def __display_raw_input__(self, result, type, input_text):
+    def __display_raw_input(self, result, type, input_text):
         """
             Display prompt to choose songs, playlist, etc...
 
