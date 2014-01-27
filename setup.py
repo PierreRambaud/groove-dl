@@ -71,7 +71,7 @@ setup(
     license="GPLv3",
     scripts=["groove-dl"],
     packages=["groove"],
-    install_requires=["pycolorizer"],
+    install_requires=["pycolorizer", "prettytable"],
     tests_require=[
             "mock",
             "nose",
