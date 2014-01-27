@@ -3,6 +3,8 @@
 """
 import os
 import sys
+from prettytable import PrettyTable
+from pycolorizer import Color
 
 
 class Downloader:
@@ -27,6 +29,8 @@ class Downloader:
         else:
             import subprocess
             self.subprocess = subprocess
+
+        self.color = Color()
 
         self.output_directory = output_directory
         self.connector = connector
@@ -62,7 +66,7 @@ class Downloader:
                 filename: the filename
                 song: dictionary with song informations
         """
-        print("Downloading: %s" % (filename))
+        self.color.cprint(("Downloading: %s" % (filename)), "cyan")
         stream_key = self.connector.get_stream_key_from_song_id(song["SongID"])
         if stream_key == []:
             print("Failed to retrieve stream key!")
@@ -79,10 +83,10 @@ class Downloader:
 
         try:
             process.wait()
-            print("\nDownloaded")
+            self.color.cprint("\nDownloaded", "green")
             self.download_count += 1
         except BaseException:
-            print("Download cancelled. File deleted.")
+            self.color.cprint("Download cancelled. File deleted.", "red")
             os.remove(filename)
             return False
 
@@ -117,30 +121,32 @@ class Downloader:
                 input_text: texte for the raw input
         """
         try:
+            if type != "Playlists":
+                table = PrettyTable(["id", "Album", "Artist", "Song"])
+            else:
+                table = PrettyTable(["id", "Name", "Author", "NumSongs"])
+
             for idx, data in enumerate(result):
                 key = None
                 if (type != "Playlists"):
-                    print(
-                        "%d - Album: %sSong: %s - %s" % (
-                            idx,
-                            data["AlbumName"].ljust(40),
-                            data["ArtistName"],
-                            data["SongName"]
-                            if "SongName" in data else data["Name"]
-                        )
-                    )
+                    table.add_row([
+                        idx,
+                        data["AlbumName"].ljust(40),
+                        data["ArtistName"],
+                        data["SongName"]
+                        if "SongName" in data else data["Name"]])
                 else:
-                    print(
-                        "%d - Playlist: %sAuthor: %s with %s songs" % (
-                            idx,
-                            data["Name"].ljust(40),
-                            data["FName"],
-                            data["NumSongs"]
-                        )
-                    )
+                    table.add_row([
+                        idx,
+                        data["Name"].ljust(40),
+                        data["FName"],
+                        data["NumSongs"]])
 
                 is_last = (idx == (len(result) - 1))
                 if ((idx != 0 and idx % self.max_per_list == 0) or is_last):
+
+                    print(table.get_string())
+                    table.clear_rows()
                     while (key is not False):
                         key = input(input_text)
                         if (key == "q"):

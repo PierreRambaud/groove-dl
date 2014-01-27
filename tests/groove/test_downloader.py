@@ -51,8 +51,8 @@ class testDownloader(unittest.TestCase):
         result = self.downloader.download_song("filename.mp3", {"SongID": 1})
         self.assertEquals(
             sys.stdout.getvalue().strip(),
-            "Downloading: filename.mp3\n"
-            "Failed to retrieve stream key!"
+            '\x1b[36mDownloading: filename.mp3\x1b'
+            '[0m\nFailed to retrieve stream key!'
         )
         self.connector.get_stream_key_from_song_id.assert_called_once_with(1)
         self.assertFalse(result)
@@ -69,8 +69,8 @@ class testDownloader(unittest.TestCase):
         result = self.downloader.download_song("filename.mp3", {"SongID": 1})
         self.assertEquals(
             sys.stdout.getvalue().strip(),
-            "Downloading: filename.mp3\n\n"
-            "Downloaded"
+            '\x1b[36mDownloading: filename.mp3\x1b'
+            '[0m\n\x1b[32m\nDownloaded\x1b[0m'
         )
         self.connector.get_stream_key_from_song_id.assert_called_once_with(1)
         self.subprocess.Popen.assert_called_once_with(
@@ -122,8 +122,8 @@ class testDownloader(unittest.TestCase):
         process.wait.assert_called_once_with()
         self.assertEquals(
             sys.stdout.getvalue().strip(),
-            "Downloading: filename.mp3\n"
-            "Download cancelled. File deleted."
+            '\x1b[36mDownloading: filename.mp3\x1b'
+            '[0m\n\x1b[31mDownload cancelled. File deleted.\x1b[0m'
         )
         os.remove.assert_called_once_with("filename.mp3")
         self.assertFalse(result)
@@ -140,16 +140,25 @@ class testDownloader(unittest.TestCase):
         self.connector.search.assert_called_once_with(query, type)
         self.assertEquals(len(self.downloader.download_queue), 2)
 
-        self.assertEquals(
+        self.assertEqual(
             sys.stdout.getvalue().strip(),
-            "0 - Album: x                                 "
-            "      Song: crucia - shadow battle\n"
-            "1 - Album: CruciA                            "
-            "      Song: CruicA - Air Raid\n"
-            "shadow battle added\n"
-            "2 - Album: youtube                           "
-            "      Song: CruciA - Lie 2 Me\n"
-            "Lie 2 Me added"
+            """+----+-----------------------------------------\
+-+--------+---------------+
+| id |                  Album                   | Artist |      Song     |
++----+------------------------------------------+--------+---------------+
+| 0  | x                                        | crucia | shadow battle |
+| 1  | CruciA                                   | CruicA |    Air Raid   |
++----+------------------------------------------+--------+---------------+
+shadow battle added
++----+------------------------------------------+--------+----------+
+| id |                  Album                   | Artist |   Song   |
++----+------------------------------------------+--------+----------+
+| 2  | youtube                                  | CruciA | Lie 2 Me |
++----+------------------------------------------+--------+----------+
+Lie 2 Me added"""
+
+
+
         )
         input.assert_called_with(
             "Press \"n\" for next page, "
@@ -168,10 +177,18 @@ class testDownloader(unittest.TestCase):
         self.downloader.prepare(query, type)
         self.assertEquals(len(self.downloader.download_queue), 1)
 
-        self.assertEquals(
+        self.assertEqual(
             sys.stdout.getvalue().strip(),
-            "0 - Playlist: CruciAGoT                               "
-            "Author: RAMBAUD PIERRE   with 41 songs\n"
+            "+----+------------------------------------------"
+            "+------------------+----------+\n"
+            "| id |                   Name                   "
+            "|      Author      | NumSongs |\n"
+            "+----+------------------------------------------"
+            "+------------------+----------+\n"
+            "| 0  | CruciAGoT                                "
+            "| RAMBAUD PIERRE   |    41    |\n"
+            "+----+------------------------------------------"
+            "+------------------+----------+\n"
             "CruciAGoT"
         )
         input.assert_called_with(
