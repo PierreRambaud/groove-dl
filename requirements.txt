@@ -1,0 +1,4 @@
+PyColorizer
+mock
+nose
+prettytable
