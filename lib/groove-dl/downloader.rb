@@ -5,16 +5,19 @@ module GrooveDl
     attr_writer :client
     attr_writer :download_queue
     attr_writer :download_count
+    attr_writer :download_skip
 
     def initialize
       @client = Grooveshark::Client.new
       @download_queue = []
       @download_count = 0
+      @download_skip = 0
       @output_directory = Dir.tmpdir
     end
 
     def playlist(playlist_id)
-      @client.request('getPlaylistByID', playlistID: playlist_id)['songs'].each do |s|
+      @client.request('getPlaylistByID',
+                      playlistID: playlist_id)['songs'].each do |s|
         @download_queue << s
       end
 
@@ -22,20 +25,30 @@ module GrooveDl
     end
 
     def download(song, filename)
-      wget = sprintf('wget --progress=dot -O "%s" "%s"',
-                     filename,
-                     @client.get_song_url_by_id(song['song_id']))
-      cmd = wget + ' 2>&1 | grep --line-buffered \"%\" |' \
-            "sed -u -e 's,\.,,g\' | awk '{printf(\"\b\b\b\b%4s\", $2)}'"
+      url = URI.parse(@client.get_song_url_by_id(song['song_id']))
+      @client.get_stream_auth_by_songid(song['song_id'])
+      @counter = 0
 
-      begin
-        IO.popen(cmd) do |p|
-          puts p
-          puts p.wait
+      block = proc do |response|
+        pbar = ProgressBar.new(filename.split('/').last,
+                               response['content-length'].to_i)
+        File.open(filename, 'w') do |f|
+          response.read_body do |chunk|
+            f.write(chunk)
+            @counter += chunk.length
+            pbar.set(@counter)
+          end
         end
-      rescue StandarError
-        configuration.logger.error('Download cancelled. File Deleted.')
       end
+
+      RestClient::Request
+        .execute(method: :get,
+                 url: url.to_s,
+                 block_response: block)
+      pbar.finish
+      @download_count += 1
+    rescue
+      configuration.logger.error('Download cancelled. File Deleted.')
     end
 
     def download_queue
@@ -45,10 +58,10 @@ module GrooveDl
                     @output_directory,
                     song['artist_name'],
                     song['name'])
-        unless File.exist?(f)
-          download(song, f)
+        if File.exist?(f)
+          @download_skip += 1
         else
-          @download_count += 1
+          download(song, f)
         end
       end
     end
