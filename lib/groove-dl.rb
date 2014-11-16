@@ -2,7 +2,7 @@
 
 require 'slop'
 require 'grooveshark'
-require 'progressbar'
+require 'ruby-progressbar'
 
 unless $LOAD_PATH.include?(File.expand_path('../', __FILE__))
   $LOAD_PATH.unshift(File.expand_path('../', __FILE__))

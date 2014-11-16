@@ -27,16 +27,15 @@ module GrooveDl
     def download(song, filename)
       url = URI.parse(@client.get_song_url_by_id(song['song_id']))
       @client.get_stream_auth_by_songid(song['song_id'])
-      @counter = 0
 
       block = proc do |response|
-        pbar = ProgressBar.new(filename.split('/').last,
-                               response['content-length'].to_i)
+        pbar = ProgressBar.create(title: filename.split('/').last,
+                                  format: '%a |%b>>%i| %p%% %t',
+                                  total: response['content-length'].to_i)
         File.open(filename, 'w') do |f|
           response.read_body do |chunk|
             f.write(chunk)
-            @counter += chunk.length
-            pbar.set(@counter)
+            pbar.progress += chunk.length
           end
         end
       end
