@@ -7,26 +7,26 @@ module GrooveDl
     attr_writer :download_count
     attr_writer :download_skip
 
-    def initialize
-      @client = Grooveshark::Client.new
+    def initialize(client, options = {})
+      @client = client
+      @output_directory = options[:o] || Dir.tmpdir
       @download_queue = []
       @download_count = 0
       @download_skip = 0
-      @output_directory = Dir.tmpdir
     end
 
     def playlist(playlist_id)
       @client.request('getPlaylistByID',
-                      playlistID: playlist_id)['songs'].each do |s|
-        @download_queue << s
+                      playlistID: playlist_id)['songs'].each do |song|
+        @download_queue << Grooveshark::Song.new(song)
       end
 
       download_queue
     end
 
     def download(song, filename)
-      url = URI.parse(@client.get_song_url_by_id(song['song_id']))
-      @client.get_stream_auth_by_songid(song['song_id'])
+      url = URI.parse(@client.get_song_url_by_id(song.id))
+      @client.get_stream_auth_by_songid(song.id)
 
       block = proc do |response|
         pbar = ProgressBar.create(title: filename.split('/').last,
@@ -38,16 +38,17 @@ module GrooveDl
             pbar.progress += chunk.length
           end
         end
+
+        pbar.finish
+        @download_count += 1
       end
 
       RestClient::Request
         .execute(method: :get,
                  url: url.to_s,
                  block_response: block)
-      pbar.finish
-      @download_count += 1
     rescue
-      configuration.logger.error('Download cancelled. File Deleted.')
+      logger.error('Download cancelled. File Deleted.')
     end
 
     def download_queue
@@ -55,8 +56,8 @@ module GrooveDl
       @download_queue.each do |song|
         f = sprintf('%s/%s-%s.mp3',
                     @output_directory,
-                    song['artist_name'],
-                    song['name'])
+                    song.artist,
+                    song.name)
         if File.exist?(f)
           @download_skip += 1
         else

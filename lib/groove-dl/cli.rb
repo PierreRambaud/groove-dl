@@ -36,12 +36,12 @@ module GrooveDl
         on :a=, :artist=, 'Artist'
         on :o=, :output=, 'Output directory'
 
-        run do |opts, args|
-          puts opts[:s]
-          puts args
+        run do |opts, _args|
+          next if opts[:v]
 
-          d = Downloader.new
-          d.playlist('98625672')
+          client = Grooveshark::Client.new
+          d = Downloader.new(client, opts)
+          d.playlist(opts[:p]) if opts[:p]
         end
       end
     end
