@@ -9,9 +9,10 @@ bin/groove-dl
 groove-dl.gemspec
 lib/groove-dl.rb
 lib/groove-dl/cli.rb
-lib/groove-dl/cli/search.rb
+lib/groove-dl/downloader.rb
 lib/groove-dl/version.rb
 spec/groove-dl/cli_spec.rb
+spec/groove-dl/downloader_spec.rb
 spec/spec_helper.rb
 task/manifest.rake
 task/rubocop.rake

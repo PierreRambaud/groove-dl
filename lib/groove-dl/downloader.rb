@@ -16,8 +16,10 @@ module GrooveDl
     end
 
     def playlist(playlist_id)
-      @client.request('getPlaylistByID',
-                      playlistID: playlist_id)['songs'].each do |song|
+      playlist = @client.request('getPlaylistByID',
+                                 playlistID: playlist_id)
+      return false unless playlist.key?('songs')
+      playlist['songs'].each do |song|
         @download_queue << Grooveshark::Song.new(song)
       end
 
@@ -47,8 +49,6 @@ module GrooveDl
         .execute(method: :get,
                  url: url.to_s,
                  block_response: block)
-    rescue
-      logger.error('Download cancelled. File Deleted.')
     end
 
     def download_queue

@@ -31,10 +31,9 @@ module GrooveDl
           puts CLI.version_information
         end
 
-        on :s=, :song=, 'Song'
-        on :p=, :playlist=, 'Playlist'
-        on :a=, :artist=, 'Artist'
-        on :o=, :output=, 'Output directory'
+        on :s=, :song=, 'Song', as: String
+        on :p=, :playlist=, 'Playlist', as: Integer
+        on :o=, :output=, 'Output directory', as: String
 
         run do |opts, _args|
           next if opts[:v]
