@@ -10,9 +10,9 @@ module GrooveDl
     def initialize(client, options = {})
       @client = client
       @output_directory = options[:o] || Dir.tmpdir
-      @download_queue = []
-      @download_count = 0
-      @download_skip = 0
+      @queue = []
+      @count = 0
+      @skip = 0
     end
 
     def playlist(playlist_id)
@@ -20,7 +20,7 @@ module GrooveDl
                                  playlistID: playlist_id)
       return false unless playlist.key?('songs')
       playlist['songs'].each do |song|
-        @download_queue << Grooveshark::Song.new(song)
+        @queue << Grooveshark::Song.new(song)
       end
 
       download_queue
@@ -30,7 +30,31 @@ module GrooveDl
       url = URI.parse(@client.get_song_url_by_id(song.id))
       @client.get_stream_auth_by_songid(song.id)
 
-      block = proc do |response|
+      RestClient::Request
+        .execute(method: :get,
+                 url: url.to_s,
+                 block_response: process_response(filename))
+    end
+
+    def download_queue
+      return false if @queue.empty?
+      @queue.each do |song|
+        f = sprintf('%s/%s-%s.mp3',
+                    @output_directory,
+                    song.artist,
+                    song.name)
+        if File.exist?(f)
+          @skip += 1
+        else
+          download(song, f)
+        end
+      end
+
+      { skipped: @skip, downloaded: @count }
+    end
+
+    def process_response(filename)
+      proc do |response|
         pbar = ProgressBar.create(title: filename.split('/').last,
                                   format: '%a |%b>>%i| %p%% %t',
                                   total: response['content-length'].to_i)
@@ -42,27 +66,7 @@ module GrooveDl
         end
 
         pbar.finish
-        @download_count += 1
-      end
-
-      RestClient::Request
-        .execute(method: :get,
-                 url: url.to_s,
-                 block_response: block)
-    end
-
-    def download_queue
-      return false if @download_queue.empty?
-      @download_queue.each do |song|
-        f = sprintf('%s/%s-%s.mp3',
-                    @output_directory,
-                    song.artist,
-                    song.name)
-        if File.exist?(f)
-          @download_skip += 1
-        else
-          download(song, f)
-        end
+        @count += 1
       end
     end
   end
