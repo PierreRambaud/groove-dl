@@ -30,6 +30,21 @@ module GrooveDl
           "Groove-dl v#{VERSION} on #{RUBY_DESCRIPTION}"
         )
       end
+
+      it 'should download playlist' do
+        allow(Grooveshark::Client).to receive(:new).and_return(true)
+        downloader = double
+        allow(downloader).to receive(:playlist).with(1).and_return(true)
+        allow(Downloader).to receive(:new).and_return(downloader)
+        expect(CLI.options.parse %w( -p 1)).to eq(['-p', '1'])
+      end
+
+      it 'should do nothing if v option is passed' do
+        expect(CLI.options).to receive(:puts).with(/Groove-dl v.* on ruby/)
+          .and_return(nil)
+        expect(CLI.options.parse %w( -v)).to eq(['-v'])
+
+      end
     end
   end
 end
