@@ -1,0 +1,6 @@
+Style/FileName:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metric/MethodLength:
+  Enabled: false

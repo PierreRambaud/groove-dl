@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+require File.expand_path('../../lib/groove-dl', __FILE__)
+
+options = GrooveDl::CLI.options
+puts options if options.parse.empty?
