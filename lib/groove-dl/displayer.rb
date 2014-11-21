@@ -26,7 +26,7 @@ module GrooveDl
         add_row(table, data)
       end
 
-      puts table
+      puts table.to_s
     end
 
     def headers
