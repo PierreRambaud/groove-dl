@@ -26,7 +26,7 @@ module GrooveDl
       expect(@downloader.download_queue).to be_falsy
     end
 
-    it 'should download songs' do
+    it 'should download playlist' do
       allow(@client).to receive(:request)
         .and_return('songs' => [{ 'song_id' =>  1,
                                   'name' => 'test',
@@ -43,6 +43,25 @@ module GrooveDl
         .to eq(skipped: 0, downloaded: 0)
       Dir.mkdir('/tmp')
       File.open('/tmp/got-test.mp3', 'w') do |f|
+        f.write('test')
+      end
+      expect(@downloader.download_queue)
+        .to eq(skipped: 1, downloaded: 0)
+    end
+
+    it 'should download song' do
+      allow(@client).to receive(:get_stream_auth_by_songid)
+        .with(1).and_return({})
+      allow(@client).to receive(:get_song_url_by_id)
+        .with(1).and_return('http://test/stream?key=something')
+
+      allow(RestClient::Request).to receive(:execute)
+        .and_return(true)
+
+      expect(@downloader.song(1))
+        .to eq(skipped: 0, downloaded: 0)
+      Dir.mkdir('/tmp')
+      File.open('/tmp/unknown-unknown.mp3', 'w') do |f|
         f.write('test')
       end
       expect(@downloader.download_queue)

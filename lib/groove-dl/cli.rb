@@ -32,6 +32,7 @@ module GrooveDl
         end
 
         on :p=, :playlist=, 'Playlist', as: Integer
+        on :s=, :song=, 'Song', as: Integer
         on :o=, :output=, 'Output directory', as: String
 
         run do |opts|
@@ -40,6 +41,7 @@ module GrooveDl
           client = Grooveshark::Client.new
           d = Downloader.new(client, opts)
           d.playlist(opts[:p]) if opts[:p]
+          d.song(opts[:s]) if opts[:s]
         end
       end
     end

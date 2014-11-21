@@ -21,6 +21,20 @@ module GrooveDl
     end
 
     ##
+    # Download song
+    #
+    # @params [String] song_id Song id
+    #
+    # @return [Array]
+    #
+    def song(song_id)
+      @queue << Grooveshark::Song.new('song_id' => song_id,
+                                      'artist_name' => 'unknown',
+                                      'song_name' => 'unknown')
+      download_queue
+    end
+
+    ##
     # Download playlist
     #
     # @params [String] playlist_id Playlist id

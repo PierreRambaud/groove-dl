@@ -22,10 +22,8 @@ module GrooveDl
     #
     def render
       table = Terminal::Table.new(headings: headers, title: @type)
-      idx = 0
       @result.each do |data|
-        add_row(table, idx, data)
-        idx += 1
+        add_row(table, data)
       end
 
       puts table
@@ -44,12 +42,12 @@ module GrooveDl
     #
     # @return [Nil]
     #
-    def add_row(table, idx, data)
-      table.add_row([idx,
+    def add_row(table, data)
+      table.add_row([data['playlist_id'],
                      data['name'],
                      data['f_name'],
                      data['num_songs']]) if @type == 'Playlists'
-      table.add_row([idx,
+      table.add_row([data.id,
                      data.album,
                      data.artist,
                      data.name]) if @type == 'Songs'
