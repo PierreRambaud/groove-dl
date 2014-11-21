@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'slop', '~>3.6'
   s.add_dependency 'grooveshark', '~>0.2.11'
   s.add_dependency 'ruby-progressbar', '~>1.7.0'
+  s.add_dependency 'terminal-table', '~>1.4.5'
 
   s.add_development_dependency 'fakefs', '~>0.6.0'
   s.add_development_dependency 'rake', '~>10.0'

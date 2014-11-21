@@ -31,11 +31,10 @@ module GrooveDl
           puts CLI.version_information
         end
 
-        on :s=, :song=, 'Song', as: String
         on :p=, :playlist=, 'Playlist', as: Integer
         on :o=, :output=, 'Output directory', as: String
 
-        run do |opts, _args|
+        run do |opts|
           next if opts[:v]
 
           client = Grooveshark::Client.new
