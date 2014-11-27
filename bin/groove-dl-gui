@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+require File.expand_path('../../lib/groove-dl', __FILE__)
+
+require 'gtk3'
+require 'groove-dl/app'
+require 'groove-dl/widgets/search'
+require 'groove-dl/widgets/list'
+
+Gtk.init
+GrooveDl::App.new
+Gtk.main
