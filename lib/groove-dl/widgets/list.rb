@@ -4,22 +4,23 @@ module GrooveDl
   module Widgets
     # List tree
     class List < Gtk::Box
-      COLUMN_FIXED,
-      COLUMN_NUMBER,
-      COLUMN_SEVERITY,
-      COLUMN_DESCRIPTION = *(0..4).to_a
+      COLUMN_ID,
+      COLUMN_NAME,
+      COLUMN_AUTHOR,
+      COLUMN_SONG = *(0..4).to_a
 
-      def load(_window)
+      def load(_client, _window)
         sw = Gtk::ScrolledWindow.new(nil, nil)
         sw.shadow_type = Gtk::ShadowType::ETCHED_IN
         sw.set_policy(Gtk::PolicyType::NEVER, :automatic)
         pack_start(sw, expand: true, fill: true, padding: 0)
 
         # create tree view
-        model = create_model
-        treeview = Gtk::TreeView.new(model)
+        @store = Gtk::ListStore.new(Integer, String, String, String)
+        create_model
+        treeview = Gtk::TreeView.new(@store)
         treeview.rules_hint = true
-        treeview.search_column = COLUMN_DESCRIPTION
+        treeview.search_column = COLUMN_SONG
 
         sw.add(treeview)
 
@@ -29,71 +30,57 @@ module GrooveDl
 
       def create_model(data = [])
         # create list store
-        store = Gtk::ListStore.new(TrueClass, Integer, String, String)
-
+        @store.clear
         # add data to the list store
-        data.each do |bug|
-          iter = store.append
-          bug.each_with_index do |value, index|
-            iter[index] = value
+        data.each do |element|
+          iter = @store.append
+          if element.is_a?(Grooveshark::Song)
+            iter[0] = element.id.to_i
+            iter[1] = element.name
+            iter[2] = element.artist
+            iter[3] = element.album
+          else
+            iter[0] = element['playlist_id'].to_i
+            iter[1] = element['name']
+            iter[2] = element['f_name']
+            iter[3] = element['num_songs']
           end
         end
-        store
       end
 
       def add_columns(treeview)
-        # column for fixed toggles
-        renderer = Gtk::CellRendererToggle.new
-        renderer.signal_connect('toggled') do |_cell, path|
-          fixed_toggled(treeview.model, path)
-        end
-
-        column = Gtk::TreeViewColumn.new('Fixed?',
+        renderer = Gtk::CellRendererText.new
+        column = Gtk::TreeViewColumn.new('Id',
                                          renderer,
-                                         'active' => COLUMN_FIXED)
-
-        # set this column to a fixed sizing (of 50 pixels)
+                                         'text' => COLUMN_ID)
+        column.set_sort_column_id(COLUMN_ID)
         column.sizing = Gtk::TreeViewColumn::Sizing::FIXED
+        column.fixed_width = 70
+        treeview.append_column(column)
+
+        renderer = Gtk::CellRendererText.new
+        column = Gtk::TreeViewColumn.new('Name',
+                                         renderer,
+                                         'text' => COLUMN_NAME)
+        column.set_sort_column_id(COLUMN_NAME)
+        column.fixed_width = 400
+        treeview.append_column(column)
+
+        renderer = Gtk::CellRendererText.new
+        column = Gtk::TreeViewColumn.new('Author',
+                                         renderer,
+                                         'text' => COLUMN_AUTHOR)
+        column.set_sort_column_id(COLUMN_AUTHOR)
+        column.fixed_width = 200
+        treeview.append_column(column)
+
+        renderer = Gtk::CellRendererText.new
+        column = Gtk::TreeViewColumn.new('Number of songs',
+                                         renderer,
+                                         'text' => COLUMN_SONG)
+        column.set_sort_column_id(COLUMN_SONG)
         column.fixed_width = 50
         treeview.append_column(column)
-
-        # column for bug numbers
-        renderer = Gtk::CellRendererText.new
-        column = Gtk::TreeViewColumn.new('Bug number',
-                                         renderer,
-                                         'text' => COLUMN_NUMBER)
-        column.set_sort_column_id(COLUMN_NUMBER)
-        treeview.append_column(column)
-
-        # column for severities
-        renderer = Gtk::CellRendererText.new
-        column = Gtk::TreeViewColumn.new('Severity',
-                                         renderer,
-                                         'text' => COLUMN_SEVERITY)
-        column.set_sort_column_id(COLUMN_SEVERITY)
-        treeview.append_column(column)
-
-        # column for description
-        renderer = Gtk::CellRendererText.new
-        column = Gtk::TreeViewColumn.new('Description',
-                                         renderer,
-                                         'text' => COLUMN_DESCRIPTION)
-        column.set_sort_column_id(COLUMN_DESCRIPTION)
-        treeview.append_column(column)
-      end
-
-      def fixed_toggled(model, path_str)
-        path = Gtk::TreePath.new(path_str)
-
-        # get toggled iter
-        iter = model.get_iter(path)
-        fixed = iter[COLUMN_FIXED]
-
-        # do something with the value
-        fixed ^= 1
-
-        # set new value
-        iter[COLUMN_FIXED] = fixed
       end
     end
   end
