@@ -3,7 +3,7 @@ module GrooveDl
   # Application component
   module Widgets
     # Search bar
-    class Search < Gtk::Box
+    class SearchBar < Gtk::Box
       def load(client, window)
         search_box = Gtk::Box.new(:horizontal, 6)
 

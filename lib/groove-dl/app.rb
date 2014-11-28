@@ -8,10 +8,10 @@ module GrooveDl
       client = Grooveshark::Client.new
       box = Gtk::Box.new(:vertical)
 
-      search_bar = Widgets::Search.new(:vertical, 6)
+      search_bar = Widgets::SearchBar.new(:vertical, 6)
       search_bar.load(client, self)
 
-      list = Widgets::List.new(:vertical, 6)
+      list = Widgets::SearchList.new(:vertical, 6)
       list.set_name('list')
       list.load(client, self)
 
