@@ -11,12 +11,17 @@ module GrooveDl
       search_bar = Widgets::SearchBar.new(:vertical, 6)
       search_bar.load(client, self)
 
-      list = Widgets::SearchList.new(:vertical, 6)
-      list.set_name('list')
-      list.load(client, self)
+      search_list = Widgets::SearchList.new(:vertical, 6)
+      search_list.set_name('search_search_list')
+      search_list.load(client, self)
+
+      download_list = Widgets::DownloadList.new(:vertical, 6)
+      download_list.set_name('download_search_list')
+      download_list.load(client, self)
 
       box.pack_start(search_bar, expand: false, fill: true, padding: 10)
-      box.pack_start(list, expand: true, fill: true, padding: 10)
+      box.pack_start(search_list, expand: true, fill: true, padding: 5)
+      box.pack_start(download_list, expand: true, fill: true, padding: 5)
 
       add(box)
 
@@ -29,7 +34,7 @@ module GrooveDl
       end
 
       set_title('Grooveshark Downloader')
-      set_default_size(800, 600)
+      set_default_size(1024, 768)
       set_window_position(:center)
       show_all
     end

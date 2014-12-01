@@ -16,7 +16,6 @@ module GrooveDl
         sw.set_policy(Gtk::PolicyType::AUTOMATIC, :automatic)
         pack_start(sw, expand: true, fill: true, padding: 0)
 
-        # create tree view
         @store = Gtk::ListStore.new(TrueClass, Integer, String, String, String)
         create_model
         treeview = Gtk::TreeView.new(@store)
@@ -25,14 +24,11 @@ module GrooveDl
 
         sw.add(treeview)
 
-        # add columns to the tree view
         add_columns(treeview)
       end
 
       def create_model(data = [])
-        # create list store
         @store.clear
-        # add data to the list store
         data.each do |element|
           iter = @store.append
           iter[COLUMN_FIXED] = false
