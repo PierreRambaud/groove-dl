@@ -39,7 +39,7 @@ module GrooveDl
             data
           end if search.key?('result')
 
-          window.find_by_name('list').create_model(results)
+          window.find_by_name('search_list').create_model(results)
         end
 
         search_box.pack_start(button,

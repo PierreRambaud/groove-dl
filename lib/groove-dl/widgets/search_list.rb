@@ -4,6 +4,9 @@ module GrooveDl
   module Widgets
     # Search list tree
     class SearchList < Gtk::Box
+      attr_reader :treeview
+      attr_reader :store
+
       COLUMN_FIXED,
       COLUMN_ID,
       COLUMN_NAME,
@@ -18,7 +21,7 @@ module GrooveDl
 
         @store = Gtk::ListStore.new(TrueClass, Integer, String, String, String)
         create_model
-        treeview = Gtk::TreeView.new(@store)
+        @treeview = Gtk::TreeView.new(@store)
         treeview.rules_hint = true
         treeview.search_column = COLUMN_SONG
 

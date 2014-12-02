@@ -12,15 +12,21 @@ module GrooveDl
       search_bar.load(client, self)
 
       search_list = Widgets::SearchList.new(:vertical, 6)
-      search_list.set_name('search_search_list')
+      search_list.set_name('search_list')
       search_list.load(client, self)
 
       download_list = Widgets::DownloadList.new(:vertical, 6)
-      download_list.set_name('download_search_list')
+      download_list.set_name('download_list')
       download_list.load(client, self)
+
+      download_button = Gtk::Button.new(label: 'Download',
+                                        stock_id: Gtk::Stock::SAVE)
+      download_button.signal_connect('released') do
+      end
 
       box.pack_start(search_bar, expand: false, fill: true, padding: 10)
       box.pack_start(search_list, expand: true, fill: true, padding: 5)
+      box.pack_start(download_button, expand: false, fill: false, padding: 5)
       box.pack_start(download_list, expand: true, fill: true, padding: 5)
 
       add(box)
