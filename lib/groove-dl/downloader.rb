@@ -78,10 +78,7 @@ module GrooveDl
     def download_queue
       return false if @queue.empty?
       @queue.each do |song|
-        f = sprintf('%s/%s-%s.mp3',
-                    @output_directory,
-                    song.artist,
-                    song.name)
+        f = build_path(@output_directory, song)
         if File.exist?(f)
           @skip += 1
         else
@@ -90,6 +87,19 @@ module GrooveDl
       end
 
       { skipped: @skip, downloaded: @count }
+    end
+
+    ##
+    # Build path
+    #
+    # @param [String] output_directory destination directory
+    # @param [Grooveshark::Song] song Song
+    #
+    def build_path(output_directory, song)
+      sprintf('%s/%s-%s.mp3',
+              output_directory,
+              song.artist,
+              song.name)
     end
 
     ##

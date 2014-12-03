@@ -4,6 +4,8 @@ module GrooveDl
   module Widgets
     # Search bar
     class SearchBar < Gtk::Box
+      attr_reader :type, :query
+
       def load(client, window)
         search_box = Gtk::Box.new(:horizontal, 6)
 
@@ -28,12 +30,12 @@ module GrooveDl
 
         button = Gtk::Button.new(label: 'Search', stock_id: Gtk::Stock::FIND)
         button.signal_connect('released') do
-          type = search_type.active_text
-          query = search_bar.text
-          next if type.empty? || query.empty?
+          @type = search_type.active_text
+          @query = search_bar.text
+          next if @type.empty? || @query.empty?
           search = client.request('getResultsFromSearch',
-                                  type: type,
-                                  query: query)
+                                  type: @type,
+                                  query: @query)
           results = search['result'].map do |data|
             next Grooveshark::Song.new data if type == 'Songs'
             data

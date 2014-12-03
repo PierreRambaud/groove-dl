@@ -4,8 +4,9 @@ module GrooveDl
   module Widgets
     # Search list tree
     class SearchList < Gtk::Box
-      attr_reader :treeview
+      attr_reader :data
       attr_reader :store
+      attr_reader :selection
 
       COLUMN_FIXED,
       COLUMN_ID,
@@ -14,6 +15,7 @@ module GrooveDl
       COLUMN_SONG = *(0..5).to_a
 
       def load(_client, _window)
+        @selection = {}
         sw = Gtk::ScrolledWindow.new
         sw.shadow_type = Gtk::ShadowType::ETCHED_IN
         sw.set_policy(Gtk::PolicyType::AUTOMATIC, :automatic)
@@ -21,7 +23,7 @@ module GrooveDl
 
         @store = Gtk::ListStore.new(TrueClass, Integer, String, String, String)
         create_model
-        @treeview = Gtk::TreeView.new(@store)
+        treeview = Gtk::TreeView.new(@store)
         treeview.rules_hint = true
         treeview.search_column = COLUMN_SONG
 
@@ -32,15 +34,18 @@ module GrooveDl
 
       def create_model(data = [])
         @store.clear
+        @data = {}
         data.each do |element|
           iter = @store.append
           iter[COLUMN_FIXED] = false
           if element.is_a?(Grooveshark::Song)
+            @data[element.id.to_i] = element
             iter[COLUMN_ID] = element.id.to_i
             iter[COLUMN_NAME] = element.name
             iter[COLUMN_AUTHOR] = element.artist
             iter[COLUMN_SONG] = element.album
           else
+            @data[element['playlist_id'].to_i] = element
             iter[COLUMN_ID] = element['playlist_id'].to_i
             iter[COLUMN_NAME] = element['name']
             iter[COLUMN_AUTHOR] = element['f_name']
@@ -102,6 +107,8 @@ module GrooveDl
         fixed = iter[COLUMN_FIXED]
         fixed ^= 1
         iter[COLUMN_FIXED] = fixed
+        @selection[iter[COLUMN_ID]] = @data[iter[COLUMN_ID]] if fixed
+        @selection.delete(iter[COLUMN_ID]) unless fixed
       end
     end
   end

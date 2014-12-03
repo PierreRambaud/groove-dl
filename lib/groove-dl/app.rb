@@ -22,6 +22,8 @@ module GrooveDl
       download_button = Gtk::Button.new(label: 'Download',
                                         stock_id: Gtk::Stock::SAVE)
       download_button.signal_connect('released') do
+        download_list.store.clear
+        download_list.create_model(search_list.selection)
       end
 
       box.pack_start(search_bar, expand: false, fill: true, padding: 10)

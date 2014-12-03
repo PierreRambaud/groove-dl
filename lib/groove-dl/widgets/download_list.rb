@@ -4,10 +4,15 @@ module GrooveDl
   module Widgets
     # Download list tree
     class DownloadList < Gtk::Box
+      attr_reader :store
+      attr_writer :downloader, :client
+
       COLUMN_PATH,
       COLUMN_PROGRESS = *(0..2).to_a
 
-      def load(_client, _window)
+      def load(client, _window)
+        @client = client
+        @downloader = GrooveDl::Downloader.new(@client)
         sw = Gtk::ScrolledWindow.new
         sw.shadow_type = Gtk::ShadowType::ETCHED_IN
         sw.set_policy(Gtk::PolicyType::AUTOMATIC, :automatic)
@@ -24,11 +29,22 @@ module GrooveDl
       end
 
       def create_model(data = [])
-        @store.clear
-        data.each do |_element|
-          iter = @store.append
-          iter[COLUMN_PATH] = path
-          iter[COLUMN_PROGRESS] = Gtk::ProgressBar.new
+        data.each do |element|
+          if element.is_a?(Grooveshark::Song)
+            iter = @store.append
+            iter[COLUMN_PATH] = @downloader.build_path(Dir.tmpdir, element)
+            iter[COLUMN_PROGRESS] = Gtk::ProgressBar.new
+          else
+            puts element.inspect
+            playlist = @client.request('getPlaylistByID',
+                                       playlistID: element['playlist_id'].to_i)
+            return unless playlist.key?('songs')
+            result = []
+            playlist['songs'].each do |song|
+              result << Grooveshark::Song.new(song)
+            end
+            create_model(result)
+          end
         end
       end
 
