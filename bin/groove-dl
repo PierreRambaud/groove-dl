@@ -3,13 +3,12 @@
 
 require File.expand_path('../../lib/groove-dl', __FILE__)
 
-require 'ruby-progressbar'
-require 'slop'
-require 'terminal-table'
+require 'gtk3'
+require 'groove-dl/app'
+require 'groove-dl/widgets/download_list'
+require 'groove-dl/widgets/search_bar'
+require 'groove-dl/widgets/search_list'
 
-require 'groove-dl/cli'
-require 'groove-dl/cli/search'
-require 'groove-dl/displayer'
-
-options = GrooveDl::CLI.options
-puts options if options.parse.empty?
+Gtk.init
+GrooveDl::App.new
+Gtk.main

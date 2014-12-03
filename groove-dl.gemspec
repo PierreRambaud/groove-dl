@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage = 'http://github.com/PierreRambaud/groove-dl'
   s.description = 'Grooveshark downloader allow you to choose' \
                   'songs and download them.'
-  s.executables = ['groove-dl']
+  s.executables = ['groove-dl', 'groove-dl-cli']
 
   s.files = File.read(File.expand_path('../MANIFEST', __FILE__)).split("\n")
 
