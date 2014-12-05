@@ -15,12 +15,13 @@ module GrooveDl
       search_list.set_name('search_list')
       search_list.load(client, self)
 
+      download_button = Gtk::Button.new(label: 'Download',
+                                        stock_id: Gtk::Stock::SAVE)
+
       download_list = Widgets::DownloadList.new(:vertical, 6)
       download_list.set_name('download_list')
       download_list.load(client, self)
 
-      download_button = Gtk::Button.new(label: 'Download',
-                                        stock_id: Gtk::Stock::SAVE)
       download_button.signal_connect('released') do
         download_list.store.clear
         download_list.create_model(search_list.selection)

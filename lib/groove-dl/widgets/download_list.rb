@@ -4,7 +4,7 @@ module GrooveDl
   module Widgets
     # Download list tree
     class DownloadList < Gtk::Box
-      attr_reader :store
+      attr_reader :store, :data
       attr_writer :downloader, :client
 
       COLUMN_PATH,
@@ -12,6 +12,7 @@ module GrooveDl
 
       def load(client, _window)
         @client = client
+        @data = {}
         @downloader = GrooveDl::Downloader.new(@client)
         sw = Gtk::ScrolledWindow.new
         sw.shadow_type = Gtk::ShadowType::ETCHED_IN
@@ -34,6 +35,7 @@ module GrooveDl
             iter = @store.append
             iter[COLUMN_PATH] = @downloader.build_path(Dir.tmpdir, element)
             iter[COLUMN_PROGRESS] = 0
+            @data[element.id] = iter
           else
             playlist = @client.request('getPlaylistByID',
                                        playlistID: id)
