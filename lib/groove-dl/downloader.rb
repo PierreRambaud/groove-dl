@@ -56,18 +56,18 @@ module GrooveDl
     # Download song
     #
     # @param [Grooveshark::Song] song Song object
-    # @param [String] filename Where the file should be downloaded
+    # @param [Proc] callback Proc function to execute during download
     #
     # @return [Net::HTTP]
     #
-    def download(song, filename)
+    def download(song, callback)
       url = URI.parse(@client.get_song_url_by_id(song.id))
       @client.get_stream_auth_by_songid(song.id)
 
       RestClient::Request
         .execute(method: :get,
                  url: url.to_s,
-                 block_response: process_response(filename)).class
+                 block_response: callback)
     end
 
     ##
@@ -82,7 +82,7 @@ module GrooveDl
         if File.exist?(f)
           @skip += 1
         else
-          download(song, f)
+          download(song, process_response(f))
         end
       end
 

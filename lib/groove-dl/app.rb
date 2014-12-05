@@ -15,6 +15,9 @@ module GrooveDl
       search_list.set_name('search_list')
       search_list.load(client, self)
 
+      add_button = Gtk::Button.new(label: 'Add to queue',
+                                   stock_id: Gtk::Stock::SAVE)
+
       download_button = Gtk::Button.new(label: 'Download',
                                         stock_id: Gtk::Stock::SAVE)
 
@@ -22,13 +25,19 @@ module GrooveDl
       download_list.set_name('download_list')
       download_list.load(client, self)
 
-      download_button.signal_connect('released') do
+      add_button.signal_connect('released') do
         download_list.store.clear
         download_list.create_model(search_list.selection)
       end
 
+      download_button.signal_connect('released') do
+        download_button.sensitive = false
+        download_list.download
+      end
+
       box.pack_start(search_bar, expand: false, fill: true, padding: 10)
       box.pack_start(search_list, expand: true, fill: true, padding: 5)
+      box.pack_start(add_button, expand: false, fill: false, padding: 5)
       box.pack_start(download_button, expand: false, fill: false, padding: 5)
       box.pack_start(download_list, expand: true, fill: true, padding: 5)
 

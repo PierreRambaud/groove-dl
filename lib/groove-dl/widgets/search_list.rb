@@ -18,7 +18,7 @@ module GrooveDl
         @selection = {}
         sw = Gtk::ScrolledWindow.new
         sw.shadow_type = Gtk::ShadowType::ETCHED_IN
-        sw.set_policy(Gtk::PolicyType::AUTOMATIC, :automatic)
+        sw.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC)
         pack_start(sw, expand: true, fill: true, padding: 0)
 
         @store = Gtk::ListStore.new(TrueClass, Integer, String, String, String)
