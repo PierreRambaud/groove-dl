@@ -2,6 +2,7 @@
 module GrooveDl
   # Downloader Class
   class Downloader
+    attr_accessor :type
     attr_writer :client
     attr_writer :download_queue
     attr_writer :download_count
@@ -18,6 +19,7 @@ module GrooveDl
       @queue = []
       @count = 0
       @skip = 0
+      @type = 'cli'
     end
 
     ##
@@ -56,13 +58,16 @@ module GrooveDl
     # Download song
     #
     # @param [Grooveshark::Song] song Song object
-    # @param [Proc] callback Proc function to execute during download
+    # @param [Gtk::TreeIter/String] callback Proc function to execute during download
     #
     # @return [Net::HTTP]
     #
-    def download(song, callback)
+    def download(song, object)
       url = URI.parse(@client.get_song_url_by_id(song.id))
       @client.get_stream_auth_by_songid(song.id)
+
+      callback = process_gui_response(object) if @type == 'gui'
+      callback = process_cli_response(object) unless @type == 'gui'
 
       RestClient::Request
         .execute(method: :get,
@@ -82,7 +87,7 @@ module GrooveDl
         if File.exist?(f)
           @skip += 1
         else
-          download(song, process_response(f))
+          download(song, f)
         end
       end
 
@@ -110,7 +115,7 @@ module GrooveDl
     #
     # @return [Proc]
     #
-    def process_response(destination)
+    def process_cli_response(destination)
       proc do |response|
         pbar = ProgressBar.create(title: destination.split('/').last,
                                   format: '%a |%b>>%i| %p%% %t',
@@ -124,6 +129,30 @@ module GrooveDl
 
         pbar.finish
         @count += 1
+      end
+    end
+
+    ##
+    # Process response to pulse progressbar stored in the
+    # TreeIter object.
+    #
+    # @param [Gtk::TreeIter] iter TreeIter
+    #
+    # @return [Proc]
+    #
+    def process_gui_response(iter)
+      proc do |response|
+        total = response['content-length'].to_i
+        File.open(iter[Widgets::DownloadList::COLUMN_PATH], 'w') do |f|
+          file_size = 0
+          response.read_body do |chunk|
+            f.write(chunk)
+            file_size += chunk.length
+            iter[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = ((file_size * 100) / total).to_i
+            iter[Widgets::DownloadList::COLUMN_PGBAR_TEXT] = 'Complete' if
+              iter[Widgets::DownloadList::COLUMN_PGBAR_VALUE] >= 100
+          end
+        end
       end
     end
   end

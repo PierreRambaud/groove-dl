@@ -8,13 +8,14 @@ module GrooveDl
       attr_writer :downloader, :client
 
       COLUMN_PATH,
-      COLUMN_PROGRESS_VALUE,
-      COLUMN_PROGRESS_TEXT = *(0..2).to_a
+      COLUMN_PGBAR_VALUE,
+      COLUMN_PGBAR_TEXT = *(0..2).to_a
 
       def load(client, _window)
         @client = client
         @data = {}
         @downloader = GrooveDl::Downloader.new(@client)
+        @downloader.type = 'gui'
         sw = Gtk::ScrolledWindow.new
         sw.shadow_type = Gtk::ShadowType::ETCHED_IN
         sw.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC)
@@ -35,8 +36,8 @@ module GrooveDl
           if element.is_a?(Grooveshark::Song)
             iter = @store.append
             iter[COLUMN_PATH] = @downloader.build_path(Dir.tmpdir, element)
-            iter[COLUMN_PROGRESS_VALUE] = 0
-            iter[COLUMN_PROGRESS_TEXT] = nil
+            iter[COLUMN_PGBAR_VALUE] = 0
+            iter[COLUMN_PGBAR_TEXT] = nil
             @data[element.id] = { iter: iter, song: element }
           else
             playlist = @client.request('getPlaylistByID',
@@ -64,8 +65,8 @@ module GrooveDl
         renderer = Gtk::CellRendererProgress.new
         column = Gtk::TreeViewColumn.new('Progress',
                                          renderer,
-                                         value: COLUMN_PROGRESS_VALUE,
-                                         text: COLUMN_PROGRESS_TEXT)
+                                         value: COLUMN_PGBAR_VALUE,
+                                         text: COLUMN_PGBAR_TEXT)
         column.fixed_width = 100
         treeview.append_column(column)
       end
@@ -73,31 +74,7 @@ module GrooveDl
       def download
         Thread.new do
           @data.each do |_id, s|
-            @downloader.download(s[:song], process_response(s[:iter]))
-          end
-        end
-      end
-
-      ##
-      # Process response to display a progress bar and download
-      # file into destination.
-      #
-      # @param [String] destination Destination
-      #
-      # @return [Proc]
-      #
-      def process_response(iter)
-        proc do |response|
-          total = response['content-length'].to_i
-          File.open(iter[COLUMN_PATH], 'w') do |f|
-            file_size = 0
-            response.read_body do |chunk|
-              f.write(chunk)
-              file_size += chunk.length
-              iter[COLUMN_PROGRESS_VALUE] = ((file_size * 100) / total).to_i
-              iter[COLUMN_PROGRESS_TEXT].value = 'Completed' if
-                iter[COLUMN_PROGRESS_VALUE] >= 100
-            end
+            @downloader.download(s[:song], s[:iter])
           end
         end
       end
