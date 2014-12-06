@@ -58,7 +58,8 @@ module GrooveDl
     # Download song
     #
     # @param [Grooveshark::Song] song Song object
-    # @param [Gtk::TreeIter/String] callback Proc function to execute during download
+    # @param [Gtk::TreeIter/String] callback Proc
+    # function to execute during download
     #
     # @return [Net::HTTP]
     #
@@ -148,7 +149,8 @@ module GrooveDl
           response.read_body do |chunk|
             f.write(chunk)
             file_size += chunk.length
-            iter[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = ((file_size * 100) / total).to_i
+            result = ((file_size * 100) / total).to_i
+            iter[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = result
             iter[Widgets::DownloadList::COLUMN_PGBAR_TEXT] = 'Complete' if
               iter[Widgets::DownloadList::COLUMN_PGBAR_VALUE] >= 100
           end

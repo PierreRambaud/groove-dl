@@ -85,7 +85,8 @@ module GrooveDl
         .and_yield('something')
         .and_yield('nested')
 
-      expect(@downloader.process_response('/tmp/got-test.mp3').call(response))
+      expect(@downloader.process_cli_response('/tmp/got-test.mp3')
+               .call(response))
         .to eq(1)
 
       expect(File.read('/tmp/got-test.mp3')).to eq('somethingnested')
