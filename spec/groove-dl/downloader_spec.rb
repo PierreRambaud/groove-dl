@@ -4,6 +4,8 @@ require 'grooveshark'
 require 'ruby-progressbar'
 require 'fakefs/spec_helpers'
 require 'groove-dl/downloader'
+require 'gtk3'
+require 'groove-dl/widgets/download_list'
 require 'slop'
 
 # Groove Dl tests
@@ -68,7 +70,7 @@ module GrooveDl
         .to eq(skipped: 1, downloaded: 0)
     end
 
-    it 'should process response' do
+    it 'should process response in cli mode' do
       Dir.mkdir('/tmp')
       pbar = double
       allow(pbar).to receive(:progress).and_return(pbar)
@@ -88,6 +90,27 @@ module GrooveDl
       expect(@downloader.process_cli_response('/tmp/got-test.mp3')
                .call(response))
         .to eq(1)
+
+      expect(File.read('/tmp/got-test.mp3')).to eq('somethingnested')
+    end
+
+    it 'should process response in gui mode' do
+      Dir.mkdir('/tmp')
+      iter = []
+      iter[0] = '/tmp/got-test.mp3'
+      response = double
+      allow(response).to receive(:[])
+        .with('content-length').and_return('15')
+      allow(response).to receive(:read_body)
+        .and_yield('something')
+        .and_yield('nested')
+
+      expect(@downloader.process_gui_response(iter)
+               .call(response))
+        .to eq('Complete')
+
+      expect(iter[1]).to eq(100)
+      expect(iter[2]).to eq('Complete')
 
       expect(File.read('/tmp/got-test.mp3')).to eq('somethingnested')
     end
