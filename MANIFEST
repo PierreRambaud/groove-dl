@@ -7,7 +7,7 @@ MANIFEST
 README.md
 Rakefile
 bin/groove-dl
-bin/groove-dl-gui
+bin/groove-dl-cli
 groove-dl.gemspec
 lib/groove-dl.rb
 lib/groove-dl/app.rb
@@ -16,6 +16,7 @@ lib/groove-dl/cli/search.rb
 lib/groove-dl/displayer.rb
 lib/groove-dl/downloader.rb
 lib/groove-dl/version.rb
+lib/groove-dl/widgets/download_list.rb
 lib/groove-dl/widgets/search_bar.rb
 lib/groove-dl/widgets/search_list.rb
 spec/groove-dl/cli_spec.rb

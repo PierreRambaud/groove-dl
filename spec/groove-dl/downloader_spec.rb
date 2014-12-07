@@ -4,8 +4,6 @@ require 'grooveshark'
 require 'ruby-progressbar'
 require 'fakefs/spec_helpers'
 require 'groove-dl/downloader'
-require 'gtk3'
-require 'groove-dl/widgets/download_list'
 require 'slop'
 
 # Groove Dl tests
@@ -96,6 +94,9 @@ module GrooveDl
 
     it 'should process response in gui mode' do
       Dir.mkdir('/tmp')
+      stub_const('Widgets::DownloadList::COLUMN_PATH', 0)
+      stub_const('Widgets::DownloadList::COLUMN_PGBAR_VALUE', 1)
+      stub_const('Widgets::DownloadList::COLUMN_PGBAR_TEXT', 2)
       iter = []
       iter[0] = '/tmp/got-test.mp3'
       response = double
