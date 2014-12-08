@@ -24,8 +24,8 @@ module GrooveDl
                                 padding: 5)
 
         directory_finder = Gtk::FileChooserButton
-          .new('Select directory',
-               Gtk::FileChooser::Action::SELECT_FOLDER)
+                           .new('Select directory',
+                                Gtk::FileChooser::Action::SELECT_FOLDER)
         download_box.pack_start(directory_finder,
                                 expand: true,
                                 fill: true,
@@ -43,7 +43,6 @@ module GrooveDl
                                 expand: false,
                                 fill: true,
                                 padding: 5)
-
 
         pack_start(download_box,
                    expand: false,
