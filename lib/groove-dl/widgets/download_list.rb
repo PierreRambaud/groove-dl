@@ -40,12 +40,9 @@ module GrooveDl
             iter[COLUMN_PGBAR_TEXT] = nil
             @data[element.id] = { iter: iter, song: element }
           else
-            playlist = @client.request('getPlaylistByID',
-                                       playlistID: id)
-            return unless playlist.key?('songs')
+            playlist = Grooveshark::Playlist.new(@client, 'playlist_id' => id)
             result = {}
-            playlist['songs'].each do |s|
-              song = Grooveshark::Song.new(s)
+            playlist.load_songs.each do |song|
               result[song.id] = song
             end
 

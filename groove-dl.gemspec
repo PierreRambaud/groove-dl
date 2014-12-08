@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.9.2'
 
   s.add_dependency 'slop', '~>3.6'
-  s.add_dependency 'grooveshark', '~>0.2.11'
+  s.add_dependency 'grooveshark', '~>0.2.12'
   s.add_dependency 'ruby-progressbar', '~>1.7.0'
   s.add_dependency 'terminal-table', '~>1.4.5'
   s.add_dependency 'gtk3', '~>2.2'

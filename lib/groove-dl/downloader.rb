@@ -44,12 +44,11 @@ module GrooveDl
     # @return [Array]
     #
     def playlist(playlist_id)
-      playlist = @client.request('getPlaylistByID',
-                                 playlistID: playlist_id)
-      return false unless playlist.key?('songs')
-      playlist['songs'].each do |song|
-        @queue << Grooveshark::Song.new(song)
-      end
+      playlist = Grooveshark::Playlist.new(@client,
+                                           'playlist_id' => playlist_id)
+      songs = playlist.load_songs
+      return false unless songs
+      @queue += songs
 
       download_queue
     end
