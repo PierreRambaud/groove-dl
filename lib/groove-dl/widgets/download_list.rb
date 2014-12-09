@@ -11,8 +11,9 @@ module GrooveDl
       COLUMN_PGBAR_VALUE,
       COLUMN_PGBAR_TEXT = *(0..2).to_a
 
-      def load(client, _window)
+      def load(client, window)
         @client = client
+        @window = window
         @data = {}
         @downloader = GrooveDl::Downloader.new(@client)
         @downloader.type = 'gui'
@@ -35,7 +36,11 @@ module GrooveDl
         data.each do |id, element|
           if element.is_a?(Grooveshark::Song)
             iter = @store.append
-            iter[COLUMN_PATH] = @downloader.build_path(Dir.tmpdir, element)
+            iter[COLUMN_PATH] = @downloader
+              .build_path(@window
+                            .find_by_name('directory_chooser')
+                            .filename,
+                          element)
             iter[COLUMN_PGBAR_VALUE] = 0
             iter[COLUMN_PGBAR_TEXT] = nil
             @data[element.id] = { iter: iter, song: element }
