@@ -16,6 +16,7 @@ lib/groove-dl/cli/search.rb
 lib/groove-dl/displayer.rb
 lib/groove-dl/downloader.rb
 lib/groove-dl/version.rb
+lib/groove-dl/widgets/download_bar.rb
 lib/groove-dl/widgets/download_list.rb
 lib/groove-dl/widgets/search_bar.rb
 lib/groove-dl/widgets/search_list.rb

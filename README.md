@@ -32,6 +32,9 @@ To run unit tests:
 To check code style:
 `$ bundle exec rake rubocop`
 
+To run all tests:
+`$ bundle exec rake`
+
 ##Disclamer
 
 You must have paid the song before download it, thus I'm not responsible for any violations this script does to Grooveshark's Terms Of Use.
