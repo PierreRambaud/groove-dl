@@ -75,8 +75,14 @@ module GrooveDl
 
       def download
         Thread.new do
+          nb = 0
           @data.each do |_id, s|
-            @downloader.download(s[:song], s[:iter])
+            nb += 1
+            Thread.new do
+              @downloader.download(s[:song], s[:iter])
+              nb -= 1
+            end
+            sleep(1) until nb < 5
           end
         end
       end
