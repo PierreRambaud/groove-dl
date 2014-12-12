@@ -36,7 +36,6 @@ module GrooveDl
         concurrency_entry = Gtk::Entry.new
         concurrency_entry.set_name('concurrency_entry')
         concurrency_entry.text = '5'
-        concurrency_entry.width_chars = 5
 
         concurrency_label = Gtk::Label.new('Concurrency', true)
         concurrency_label.mnemonic_widget = concurrency_entry
