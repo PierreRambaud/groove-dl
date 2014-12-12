@@ -74,6 +74,8 @@ module GrooveDl
       end
 
       def download
+        concurrency = @window.find_by_name('concurrency_entry').text.to_i
+        concurrency = 5 if concurrency == 0
         Thread.new do
           nb = 0
           @data.each do |_id, s|
@@ -82,7 +84,7 @@ module GrooveDl
               @downloader.download(s[:song], s[:iter])
               nb -= 1
             end
-            sleep(1) until nb < 5
+            sleep(0.5) until nb < concurrency
           end
         end
       end

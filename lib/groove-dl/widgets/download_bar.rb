@@ -33,6 +33,28 @@ module GrooveDl
                                 fill: true,
                                 padding: 5)
 
+        concurrency_entry = Gtk::Entry.new
+        concurrency_entry.set_name('concurrency_entry')
+        concurrency_entry.text = '5'
+        concurrency_entry.width_chars = 5
+
+        concurrency_label = Gtk::Label.new('Concurrency', true)
+        concurrency_label.mnemonic_widget = concurrency_entry
+
+        download_box.pack_start(concurrency_label,
+                                expand: false,
+                                fill: false,
+                                padding: 5)
+        download_box.pack_start(concurrency_entry,
+                                expand: false,
+                                fill: false,
+                                padding: 5)
+
+        concurrency_entry.signal_connect('changed') do
+          value = concurrency_entry.text.to_i
+          concurrency_entry.text = value.to_s unless value == 0
+        end
+
         download_button = Gtk::Button.new(label: 'Download',
                                           stock_id: Gtk::Stock::SAVE)
 
