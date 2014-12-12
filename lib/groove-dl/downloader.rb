@@ -147,7 +147,7 @@ module GrooveDl
         if File.size?(path) == total_size
           iter[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = 100
           iter[Widgets::DownloadList::COLUMN_PGBAR_TEXT] = 'Complete'
-          return
+          next
         end
 
         File.open(path, 'w') do |f|

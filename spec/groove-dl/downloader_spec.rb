@@ -115,5 +115,33 @@ module GrooveDl
 
       expect(File.read('/tmp/got-test.mp3')).to eq('somethingnested')
     end
+
+    it 'should process response in gui mode with existing file' do
+      Dir.mkdir('/tmp')
+      stub_const('Widgets::DownloadList::COLUMN_PATH', 0)
+      stub_const('Widgets::DownloadList::COLUMN_PGBAR_VALUE', 1)
+      stub_const('Widgets::DownloadList::COLUMN_PGBAR_TEXT', 2)
+      iter = []
+      iter[0] = '/tmp/got-test.mp3'
+      response = double
+      allow(response).to receive(:[])
+        .with('content-length').and_return('15')
+      allow(response).to receive(:read_body)
+        .and_yield('something')
+        .and_yield('nested')
+
+      File.open('/tmp/got-test.mp3', 'w') do |f|
+        f.write('somethingnested')
+      end
+
+      expect(@downloader.process_gui_response(iter)
+               .call(response))
+        .to be_nil
+
+      expect(iter[1]).to eq(100)
+      expect(iter[2]).to eq('Complete')
+
+      expect(File.read('/tmp/got-test.mp3')).to eq('somethingnested')
+    end
   end
 end

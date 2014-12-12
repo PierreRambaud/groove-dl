@@ -37,10 +37,10 @@ module GrooveDl
           if element.is_a?(Grooveshark::Song)
             iter = @store.append
             iter[COLUMN_PATH] = @downloader
-              .build_path(@window
-                            .find_by_name('directory_chooser')
-                            .filename,
-                          element)
+                                .build_path(@window
+                                              .find_by_name('directory_chooser')
+                                              .filename,
+                                            element)
             iter[COLUMN_PGBAR_VALUE] = 0
             iter[COLUMN_PGBAR_TEXT] = nil
             @data[element.id] = { iter: iter, song: element }

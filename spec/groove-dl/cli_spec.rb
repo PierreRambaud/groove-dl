@@ -43,7 +43,6 @@ module GrooveDl
         expect(CLI.options).to receive(:puts).with(/Groove-dl v.* on ruby/)
           .and_return(nil)
         expect(CLI.options.parse %w( -v)).to eq(['-v'])
-
       end
     end
   end
