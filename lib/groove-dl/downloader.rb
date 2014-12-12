@@ -142,13 +142,20 @@ module GrooveDl
     #
     def process_gui_response(iter)
       proc do |response|
-        total = response['content-length'].to_i
-        File.open(iter[Widgets::DownloadList::COLUMN_PATH], 'w') do |f|
+        total_size = response['content-length'].to_i
+        path = iter[Widgets::DownloadList::COLUMN_PATH]
+        if File.size?(path) == total_size
+          iter[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = 100
+          iter[Widgets::DownloadList::COLUMN_PGBAR_TEXT] = 'Complete'
+          return
+        end
+
+        File.open(path, 'w') do |f|
           file_size = 0
           response.read_body do |chunk|
             f.write(chunk)
             file_size += chunk.length
-            result = ((file_size * 100) / total).to_i
+            result = ((file_size * 100) / total_size).to_i
             iter[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = result
             iter[Widgets::DownloadList::COLUMN_PGBAR_TEXT] = 'Complete' if
               iter[Widgets::DownloadList::COLUMN_PGBAR_VALUE] >= 100
