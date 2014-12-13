@@ -1,4 +1,4 @@
-#Grooveshark song downloader (WIP)
+#Grooveshark song downloader
 
 [![Build Status](https://travis-ci.org/PierreRambaud/groove-dl.png?branch=master)](https://travis-ci.org/PierreRambaud/groove-dl)
 
@@ -23,6 +23,48 @@ $ bundle install
 $ bundle exec rake install
 ```
 
+## Usage
+
+Run `groove-dl` and a gtk app will be displayed, you can:
+
+* search for playlist or song
+* add them to queue
+* choose download directory
+* download concurrently
+
+
+In CLI mode:
+
+```bash
+$ groove-dl-cli --help
+Usage: groove-dl [COMMAND] [OPTIONS]
+
+Options:
+
+    -v, --version       Shows the current version
+    -p, --playlist      Playlist
+    -s, --song          Song
+    -o, --output        Output directory
+    -h, --help          Display this help message.
+
+Available commands:
+
+  search   Search for something on GrooveShark
+
+See `<command> --help` for more information on a specific command.
+```
+
+Search for song:
+```bash
+$ groove-dl-cli search --help
+Usage: groove-dl search [OPTIONS]
+
+Options:
+
+    -p, --playlist      Playlist
+    -s, --song          Song
+    -h, --help          Display this help message.
+```
 
 ## Running tests
 
