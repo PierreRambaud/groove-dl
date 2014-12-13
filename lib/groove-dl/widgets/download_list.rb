@@ -81,7 +81,12 @@ module GrooveDl
           @data.each do |_id, s|
             nb += 1
             Thread.new do
-              @downloader.download(s[:song], s[:iter])
+              begin
+                @downloader.download(s[:song], s[:iter])
+              rescue StandardError => e
+                puts e
+              end
+
               nb -= 1
             end
             sleep(0.5) until nb < concurrency

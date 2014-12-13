@@ -66,8 +66,20 @@ module GrooveDl
       url = URI.parse(@client.get_song_url_by_id(song.id))
       @client.get_stream_auth_by_songid(song.id)
 
-      callback = process_gui_response(object) if @type == 'gui'
-      callback = process_cli_response(object) unless @type == 'gui'
+      if @type == 'gui'
+        headers = RestClient.head(url.to_s).headers
+        size = File.size?(object[Widgets::DownloadList::COLUMN_PATH])
+        if File.exist?(object[Widgets::DownloadList::COLUMN_PATH]) &&
+           size == headers[:content_length]
+          object[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = 100
+          object[Widgets::DownloadList::COLUMN_PGBAR_TEXT] = 'Complete'
+          return
+        end
+
+        callback = process_gui_response(object)
+      else
+        callback = process_cli_response(object)
+      end
 
       RestClient::Request
         .execute(method: :get,
@@ -136,29 +148,22 @@ module GrooveDl
     # Process response to pulse progressbar stored in the
     # TreeIter object.
     #
-    # @param [Gtk::TreeIter] iter TreeIter
+    # @param [Gtk::TreeIter] object TreeIter
     #
     # @return [Proc]
     #
-    def process_gui_response(iter)
+    def process_gui_response(object)
       proc do |response|
         total_size = response['content-length'].to_i
-        path = iter[Widgets::DownloadList::COLUMN_PATH]
-        if File.size?(path) == total_size
-          iter[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = 100
-          iter[Widgets::DownloadList::COLUMN_PGBAR_TEXT] = 'Complete'
-          next
-        end
-
-        File.open(path, 'w') do |f|
+        File.open(object[Widgets::DownloadList::COLUMN_PATH], 'w') do |f|
           file_size = 0
           response.read_body do |chunk|
             f.write(chunk)
             file_size += chunk.length
             result = ((file_size * 100) / total_size).to_i
-            iter[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = result
-            iter[Widgets::DownloadList::COLUMN_PGBAR_TEXT] = 'Complete' if
-              iter[Widgets::DownloadList::COLUMN_PGBAR_VALUE] >= 100
+            object[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = result
+            object[Widgets::DownloadList::COLUMN_PGBAR_TEXT] = 'Complete' if
+              object[Widgets::DownloadList::COLUMN_PGBAR_VALUE] >= 100
           end
         end
       end
