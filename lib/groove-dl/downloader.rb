@@ -66,20 +66,8 @@ module GrooveDl
       url = URI.parse(@client.get_song_url_by_id(song.id))
       @client.get_stream_auth_by_songid(song.id)
 
-      if @type == 'gui'
-        headers = RestClient.head(url.to_s).headers
-        size = File.size?(object[Widgets::DownloadList::COLUMN_PATH])
-        if File.exist?(object[Widgets::DownloadList::COLUMN_PATH]) &&
-           size == headers[:content_length]
-          object[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = 100
-          object[Widgets::DownloadList::COLUMN_PGBAR_TEXT] = 'Complete'
-          return
-        end
-
-        callback = process_gui_response(object)
-      else
-        callback = process_cli_response(object)
-      end
+      callback = process_gui_response(object) if @type == 'gui'
+      callback = process_cli_response(object) if @type == 'cli'
 
       RestClient::Request
         .execute(method: :get,
@@ -155,7 +143,15 @@ module GrooveDl
     def process_gui_response(object)
       proc do |response|
         total_size = response['content-length'].to_i
-        File.open(object[Widgets::DownloadList::COLUMN_PATH], 'w') do |f|
+        path = object[Widgets::DownloadList::COLUMN_PATH]
+        if File.exist?(path) &&
+           File.size?(path) == total_size
+          object[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = 100
+          object[Widgets::DownloadList::COLUMN_PGBAR_TEXT] = 'Complete'
+          fail Errors::AlreadyDownloaded, "#{path} already downloaded"
+        end
+
+        File.open(path, 'w') do |f|
           file_size = 0
           response.read_body do |chunk|
             f.write(chunk)

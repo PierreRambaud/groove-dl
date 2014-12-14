@@ -4,6 +4,7 @@ require 'grooveshark'
 require 'ruby-progressbar'
 require 'fakefs/spec_helpers'
 require 'groove-dl/downloader'
+require 'groove-dl/errors'
 require 'slop'
 
 # Groove Dl tests
@@ -116,40 +117,34 @@ module GrooveDl
       expect(File.read('/tmp/got-test.mp3')).to eq('somethingnested')
     end
 
-    it 'should not download song if file exists' do
-      @downloader.type = 'gui'
+    it 'should process response in gui mode and does not download twice' do
       Dir.mkdir('/tmp')
       stub_const('Widgets::DownloadList::COLUMN_PATH', 0)
       stub_const('Widgets::DownloadList::COLUMN_PGBAR_VALUE', 1)
       stub_const('Widgets::DownloadList::COLUMN_PGBAR_TEXT', 2)
       iter = []
       iter[0] = '/tmp/got-test.mp3'
-
-      allow(@client).to receive(:get_stream_auth_by_songid)
-        .with(1).and_return({})
-      allow(@client).to receive(:get_song_url_by_id)
-        .with(1).and_return('http://test/stream?key=something')
+      response = double
+      allow(response).to receive(:[])
+        .with('content-length').and_return('15')
+      allow(response).to receive(:read_body)
+        .and_yield('something')
+        .and_yield('nested')
 
       File.open('/tmp/got-test.mp3', 'w') do |f|
         f.write('somethingnested')
       end
 
-      head_return = double
-      allow(head_return).to receive(:headers)
-        .and_return(content_length: 15)
-
-      allow(RestClient).to receive(:head)
-        .and_return(head_return)
-
-      allow(RestClient::Request).to receive(:execute)
-        .and_return(true)
-
-      song = Grooveshark::Song.new('song_id' => 1)
-      expect(@downloader.download(song, iter))
-        .to be_nil
+      expect do
+        @downloader.process_gui_response(iter)
+          .call(response)
+      end.to raise_error(Errors::AlreadyDownloaded,
+                         '/tmp/got-test.mp3 already downloaded')
 
       expect(iter[1]).to eq(100)
       expect(iter[2]).to eq('Complete')
+
+      expect(File.read('/tmp/got-test.mp3')).to eq('somethingnested')
     end
 
     it 'should download in gui mode' do

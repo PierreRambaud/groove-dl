@@ -8,3 +8,4 @@ end
 
 require 'groove-dl/downloader'
 require 'groove-dl/version'
+require 'groove-dl/errors'

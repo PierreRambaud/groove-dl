@@ -76,6 +76,7 @@ module GrooveDl
       def download
         concurrency = @window.find_by_name('concurrency_entry').text.to_i
         concurrency = 5 if concurrency == 0
+        Thread.abort_on_exception = true
         Thread.new do
           nb = 0
           @data.each do |_id, s|
