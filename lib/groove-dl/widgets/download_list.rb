@@ -85,7 +85,7 @@ module GrooveDl
               begin
                 @downloader.download(s[:song], s[:iter])
               rescue StandardError => e
-                puts e
+                GrooveDl.configuration.logger.error(e)
               end
 
               nb -= 1
