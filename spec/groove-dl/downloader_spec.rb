@@ -31,7 +31,8 @@ module GrooveDl
       allow(@client).to receive(:request)
         .and_return('songs' => [{ 'song_id' =>  1,
                                   'name' => 'test',
-                                  'artist_name' => 'got' }])
+                                  'artist_name' => 'got',
+                                  'album_name' => 'ruby' }])
       allow(@client).to receive(:get_stream_auth_by_songid)
         .with(1).and_return({})
       allow(@client).to receive(:get_song_url_by_id)
@@ -43,9 +44,11 @@ module GrooveDl
       expect(@downloader.playlist('1'))
         .to eq(skipped: 0, downloaded: 0)
       Dir.mkdir('/tmp')
-      File.open('/tmp/got-test.mp3', 'w') do |f|
+      Dir.mkdir('/tmp/got-ruby')
+      File.open('/tmp/got-ruby/1-test.mp3', 'w') do |f|
         f.write('test')
       end
+
       expect(@downloader.download_queue)
         .to eq(skipped: 1, downloaded: 0)
     end
@@ -62,7 +65,8 @@ module GrooveDl
       expect(@downloader.song(1))
         .to eq(skipped: 0, downloaded: 0)
       Dir.mkdir('/tmp')
-      File.open('/tmp/unknown-unknown.mp3', 'w') do |f|
+      Dir.mkdir('/tmp/unknown-')
+      File.open('/tmp/unknown-/1-unknown.mp3', 'w') do |f|
         f.write('test')
       end
       expect(@downloader.download_queue)
