@@ -49,7 +49,6 @@ module GrooveDl
             column = Gtk::TreeViewColumn.new('Reason',
                                              renderer,
                                              'text' => COLUMN_REASON)
-            column.fixed_width = 100
             treeview.append_column(column)
           end
         end
