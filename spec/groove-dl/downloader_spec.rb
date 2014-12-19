@@ -43,13 +43,6 @@ module GrooveDl
 
       expect(@downloader.playlist('1'))
         .to eq(skipped: 0, downloaded: 0)
-      FileUtils.mkdir_p('/tmp/got/ruby')
-      File.open('/tmp/got/ruby/test.mp3', 'w') do |f|
-        f.write('test')
-      end
-
-      expect(@downloader.download_queue)
-        .to eq(skipped: 1, downloaded: 0)
     end
 
     it 'should download song' do
@@ -63,12 +56,6 @@ module GrooveDl
 
       expect(@downloader.song(1))
         .to eq(skipped: 0, downloaded: 0)
-      FileUtils.mkdir_p('/tmp/unknown')
-      File.open('/tmp/unknown/unknown.mp3', 'w') do |f|
-        f.write('test')
-      end
-      expect(@downloader.download_queue)
-        .to eq(skipped: 1, downloaded: 0)
     end
 
     it 'should process response in cli mode' do
@@ -93,6 +80,26 @@ module GrooveDl
         .to eq(1)
 
       expect(File.read('/tmp/got-test.mp3')).to eq('somethingnested')
+    end
+
+    it 'should process response in cli mode and does not download twice' do
+      Dir.mkdir('/tmp')
+      response = double
+      allow(response).to receive(:[])
+        .with('content-length').and_return('15')
+      allow(response).to receive(:read_body)
+        .and_yield('something')
+        .and_yield('nested')
+
+      File.open('/tmp/got-test.mp3', 'w') do |f|
+        f.write('somethingnested')
+      end
+
+      expect do
+        @downloader.process_cli_response('/tmp/got-test.mp3')
+          .call(response)
+      end.to raise_error(Errors::AlreadyDownloaded,
+                         '/tmp/got-test.mp3 already downloaded')
     end
 
     it 'should process response in gui mode' do

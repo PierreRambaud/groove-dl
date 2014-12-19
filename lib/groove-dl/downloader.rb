@@ -83,12 +83,7 @@ module GrooveDl
     def download_queue
       return false if @queue.empty?
       @queue.each do |song|
-        f = build_path(@output_directory, song)
-        if File.exist?(f)
-          @skip += 1
-        else
-          download(song, f)
-        end
+        download(song, build_path(@output_directory, song))
       end
 
       { skipped: @skip, downloaded: @count }
@@ -118,6 +113,14 @@ module GrooveDl
     #
     def process_cli_response(destination)
       proc do |response|
+        total_size = response['content-length'].to_i
+        if File.exist?(destination) &&
+           File.size?(destination) == total_size
+
+          @skip += 1
+          fail Errors::AlreadyDownloaded, "#{destination} already downloaded"
+        end
+
         pbar = ProgressBar.create(title: destination.split('/').last,
                                   format: '%a |%b>>%i| %p%% %t',
                                   total: response['content-length'].to_i)
