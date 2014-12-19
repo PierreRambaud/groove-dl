@@ -143,12 +143,15 @@ module GrooveDl
     #
     def process_gui_response(object)
       proc do |response|
+        pgbar_value = Widgets::Download::List::Queue::COLUMN_PGBAR_VALUE
+        pgbar_text = Widgets::Download::List::Queue::COLUMN_PGBAR_TEXT
+
         total_size = response['content-length'].to_i
-        path = object[Widgets::DownloadList::COLUMN_PATH]
+        path = object[Widgets::Download::List::Queue::COLUMN_PATH]
         if File.exist?(path) &&
            File.size?(path) == total_size
-          object[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = 100
-          object[Widgets::DownloadList::COLUMN_PGBAR_TEXT] = 'Complete'
+          object[pgbar_value] = 100
+          object[pgbar_text] = 'Complete'
           fail Errors::AlreadyDownloaded, "#{path} already downloaded"
         end
 
@@ -161,9 +164,9 @@ module GrooveDl
             f.write(chunk)
             file_size += chunk.length
             result = ((file_size * 100) / total_size).to_i
-            object[Widgets::DownloadList::COLUMN_PGBAR_VALUE] = result
-            object[Widgets::DownloadList::COLUMN_PGBAR_TEXT] = 'Complete' if
-              object[Widgets::DownloadList::COLUMN_PGBAR_VALUE] >= 100
+            object[pgbar_value] = result
+            object[pgbar_text] = 'Complete' if
+              object[pgbar_value] >= 100
           end
         end
       end

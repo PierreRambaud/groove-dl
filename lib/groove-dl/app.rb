@@ -8,16 +8,16 @@ module GrooveDl
       client = Grooveshark::Client.new
       box = Gtk::Box.new(:vertical)
 
-      search_bar = Widgets::SearchBar.new(:vertical, 6)
+      search_bar = Widgets::Search::Bar.new(:vertical, 6)
       search_bar.load(client, self)
 
-      search_list = Widgets::SearchList.new(:vertical, 6)
+      search_list = Widgets::Search::List.new(:vertical, 6)
       search_list.load(client, self)
 
-      download_bar = Widgets::DownloadBar.new(:vertical, 6)
+      download_bar = Widgets::Download::Bar.new(:vertical, 6)
       download_bar.load(client, self)
 
-      download_book = Widgets::DownloadBook.new
+      download_book = Widgets::Download::Book.new
       download_book.load(client, self)
 
       box.pack_start(search_bar, expand: false, fill: true, padding: 10)

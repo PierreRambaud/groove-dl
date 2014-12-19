@@ -97,9 +97,9 @@ module GrooveDl
 
     it 'should process response in gui mode' do
       Dir.mkdir('/tmp')
-      stub_const('Widgets::DownloadList::COLUMN_PATH', 0)
-      stub_const('Widgets::DownloadList::COLUMN_PGBAR_VALUE', 1)
-      stub_const('Widgets::DownloadList::COLUMN_PGBAR_TEXT', 2)
+      stub_const('Widgets::Download::List::Queue::COLUMN_PATH', 0)
+      stub_const('Widgets::Download::List::Queue::COLUMN_PGBAR_VALUE', 1)
+      stub_const('Widgets::Download::List::Queue::COLUMN_PGBAR_TEXT', 2)
       iter = []
       iter[0] = '/tmp/got-test.mp3'
       response = double
@@ -121,9 +121,9 @@ module GrooveDl
 
     it 'should process response in gui mode and does not download twice' do
       Dir.mkdir('/tmp')
-      stub_const('Widgets::DownloadList::COLUMN_PATH', 0)
-      stub_const('Widgets::DownloadList::COLUMN_PGBAR_VALUE', 1)
-      stub_const('Widgets::DownloadList::COLUMN_PGBAR_TEXT', 2)
+      stub_const('Widgets::Download::List::Queue::COLUMN_PATH', 0)
+      stub_const('Widgets::Download::List::Queue::COLUMN_PGBAR_VALUE', 1)
+      stub_const('Widgets::Download::List::Queue::COLUMN_PGBAR_TEXT', 2)
       iter = []
       iter[0] = '/tmp/got-test.mp3'
       response = double
@@ -152,9 +152,9 @@ module GrooveDl
     it 'should download in gui mode' do
       @downloader.type = 'gui'
       Dir.mkdir('/tmp')
-      stub_const('Widgets::DownloadList::COLUMN_PATH', 0)
-      stub_const('Widgets::DownloadList::COLUMN_PGBAR_VALUE', 1)
-      stub_const('Widgets::DownloadList::COLUMN_PGBAR_TEXT', 2)
+      stub_const('Widgets::Download::List::Queue::COLUMN_PATH', 0)
+      stub_const('Widgets::Download::List::Queue::COLUMN_PGBAR_VALUE', 1)
+      stub_const('Widgets::Download::List::Queue::COLUMN_PGBAR_TEXT', 2)
       iter = []
       iter[0] = '/tmp/got-test.mp3'
 
