@@ -84,9 +84,15 @@ module GrooveDl
             Thread.new do
               begin
                 @downloader.download(s[:song], s[:iter])
+                @window.find_by_name('download_success_list')
+                  .create_model(s[:iter])
               rescue StandardError => e
                 GrooveDl.configuration.logger.error(e)
+                @window.find_by_name('download_failed_list')
+                  .create_model(s[:iter], e.message)
               end
+
+              @store.remove(s[:iter])
 
               nb -= 1
             end

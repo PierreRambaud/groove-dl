@@ -19,14 +19,14 @@ module GrooveDl
       download_bar.set_name('download_bar')
       download_bar.load(client, self)
 
-      download_list = Widgets::DownloadList.new(:vertical, 6)
-      download_list.set_name('download_list')
-      download_list.load(client, self)
+      download_book = Widgets::DownloadBook.new
+      download_book.set_name('download_book')
+      download_book.load(client, self)
 
       box.pack_start(search_bar, expand: false, fill: true, padding: 10)
       box.pack_start(search_list, expand: true, fill: true, padding: 5)
       box.pack_start(download_bar, expand: false, fill: true, padding: 10)
-      box.pack_start(download_list, expand: true, fill: true, padding: 5)
+      box.pack_start(download_book, expand: true, fill: true, padding: 5)
 
       add(box)
 
