@@ -12,15 +12,12 @@ module GrooveDl
       search_bar.load(client, self)
 
       search_list = Widgets::SearchList.new(:vertical, 6)
-      search_list.set_name('search_list')
       search_list.load(client, self)
 
       download_bar = Widgets::DownloadBar.new(:vertical, 6)
-      download_bar.set_name('download_bar')
       download_bar.load(client, self)
 
       download_book = Widgets::DownloadBook.new
-      download_book.set_name('download_book')
       download_book.load(client, self)
 
       box.pack_start(search_bar, expand: false, fill: true, padding: 10)

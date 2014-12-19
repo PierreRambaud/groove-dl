@@ -29,7 +29,8 @@ module GrooveDl
         iter = @store.append
         path = i[COLUMN_PATH]
         iter[COLUMN_PATH] = path
-        iter[COLUMN_SIZE] = File.size?(path).to_s
+        size = (File.size?(path).to_f / (1024 * 1024)).round(2)
+        iter[COLUMN_SIZE] = "#{size.to_s} MB"
       end
 
       def add_columns(treeview)

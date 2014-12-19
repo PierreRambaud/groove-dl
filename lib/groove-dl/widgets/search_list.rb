@@ -15,6 +15,8 @@ module GrooveDl
       COLUMN_SONG = *(0..5).to_a
 
       def load(_client, _window)
+        set_name('search_list')
+
         @selection = {}
         sw = Gtk::ScrolledWindow.new
         sw.shadow_type = Gtk::ShadowType::ETCHED_IN

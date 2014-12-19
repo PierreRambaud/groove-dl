@@ -7,6 +7,8 @@ module GrooveDl
       attr_reader :type, :query
 
       def load(_client, window)
+        set_name('download_bar')
+
         download_box = Gtk::Box.new(:horizontal, 6)
 
         add_button = Gtk::Button.new(label: 'Add to queue',
