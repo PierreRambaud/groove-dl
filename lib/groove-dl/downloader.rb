@@ -101,11 +101,10 @@ module GrooveDl
     # @param [Grooveshark::Song] song Song
     #
     def build_path(output_directory, song)
-      sprintf('%s/%s-%s/%d-%s.mp3',
+      sprintf('%s/%s/%s/%s.mp3',
               output_directory,
               song.artist,
               song.album,
-              song.id,
               song.name)
     end
 
@@ -153,7 +152,8 @@ module GrooveDl
           fail Errors::AlreadyDownloaded, "#{path} already downloaded"
         end
 
-        Dir.mkdir(File.dirname(path)) unless File.directory?(File.dirname(path))
+        dirname = File.dirname(path)
+        FileUtils.mkdir_p(dirname) unless File.directory?(dirname)
 
         File.open(path, 'w') do |f|
           file_size = 0

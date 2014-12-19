@@ -43,9 +43,8 @@ module GrooveDl
 
       expect(@downloader.playlist('1'))
         .to eq(skipped: 0, downloaded: 0)
-      Dir.mkdir('/tmp')
-      Dir.mkdir('/tmp/got-ruby')
-      File.open('/tmp/got-ruby/1-test.mp3', 'w') do |f|
+      FileUtils.mkdir_p('/tmp/got/ruby')
+      File.open('/tmp/got/ruby/test.mp3', 'w') do |f|
         f.write('test')
       end
 
@@ -64,9 +63,8 @@ module GrooveDl
 
       expect(@downloader.song(1))
         .to eq(skipped: 0, downloaded: 0)
-      Dir.mkdir('/tmp')
-      Dir.mkdir('/tmp/unknown-')
-      File.open('/tmp/unknown-/1-unknown.mp3', 'w') do |f|
+      FileUtils.mkdir_p('/tmp/unknown')
+      File.open('/tmp/unknown/unknown.mp3', 'w') do |f|
         f.write('test')
       end
       expect(@downloader.download_queue)
