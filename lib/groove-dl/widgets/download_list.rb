@@ -6,17 +6,22 @@ module GrooveDl
     class DownloadList < Gtk::Box
       attr_reader :store, :data
       attr_writer :downloader, :client
+      attr_accessor :failed, :success, :queue
 
       COLUMN_PATH,
       COLUMN_PGBAR_VALUE,
       COLUMN_PGBAR_TEXT = *(0..2).to_a
 
       def load(client, window)
+        @success = 0
+        @failed = 0
+        @queue = 0
         @client = client
         @window = window
         @data = {}
         @downloader = GrooveDl::Downloader.new(@client)
         @downloader.type = 'gui'
+
         sw = Gtk::ScrolledWindow.new
         sw.shadow_type = Gtk::ShadowType::ETCHED_IN
         sw.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC)
@@ -54,6 +59,10 @@ module GrooveDl
             create_model(result)
           end
         end
+
+        return if @data.empty?
+        @queue = @data.count
+        @window.find_by_name('download_book').set_label('QUEUE', @queue)
       end
 
       def add_columns(treeview)
@@ -86,12 +95,18 @@ module GrooveDl
                 @downloader.download(s[:song], s[:iter])
                 @window.find_by_name('download_success_list')
                   .create_model(s[:iter])
+                @window.find_by_name('download_book')
+                  .set_label('SUCCESS', @success += 1)
               rescue StandardError => e
                 GrooveDl.configuration.logger.error(e)
                 @window.find_by_name('download_failed_list')
                   .create_model(s[:iter], e.message)
+                @window.find_by_name('download_book')
+                  .set_label('FAILED', @failed += 1)
               end
 
+              @window.find_by_name('download_book')
+                .set_label('QUEUE', @queue -= 1)
               @store.remove(s[:iter])
 
               nb -= 1

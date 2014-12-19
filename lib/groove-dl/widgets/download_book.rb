@@ -4,7 +4,14 @@ module GrooveDl
   module Widgets
     # Download book
     class DownloadBook < Gtk::Notebook
+      attr_reader :window
+
+      QUEUE = 'Queue (%d)'
+      SUCCESS = 'Success (%d)'
+      FAILED = 'Failed (%d)'
+
       def load(client, window)
+        @window = window
         set_name('download_book')
         set_tab_pos(Gtk::PositionType::TOP)
 
@@ -13,28 +20,36 @@ module GrooveDl
         download_list.set_name('download_list')
         download_list.load(client, window)
 
-        download_list_label = Gtk::Label.new('Queue')
-        download_list_label.set_name('download_list_label')
-        append_page(download_list, download_list_label)
+        @download_label = Gtk::Label.new(QUEUE % 0)
+        @download_label.set_name('download_label')
+        append_page(download_list, @download_label)
 
         # Success list
         download_success_list = Widgets::DownloadSuccessList.new(:vertical, 6)
         download_success_list.set_name('download_success_list')
         download_success_list.load(client, window)
 
-        download_success_list_label = Gtk::Label.new('Downloaded')
-        download_success_list_label.set_name('download_success_list_label')
-        append_page(download_success_list, download_success_list_label)
+        @download_success_label = Gtk::Label.new(SUCCESS % 0)
+        @download_success_label.set_name('download_success_label')
+        append_page(download_success_list, @download_success_label)
 
         # Failed list
         download_failed_list = Widgets::DownloadFailedList.new(:vertical, 6)
         download_failed_list.set_name('download_failed_list')
         download_failed_list.load(client, window)
 
-        download_list_label = Gtk::Label.new('Queue')
-        download_success_list_label.set_name('download_list_label')
+        @download_failed_label = Gtk::Label.new(FAILED % 0)
+        @download_failed_label.set_name('download_failed_label')
+        append_page(download_failed_list, @download_failed_label)
+      end
 
-        append_page(download_failed_list, Gtk::Label.new('Failed'))
+      def set_label(type, nb)
+        element = @download_label if type == 'QUEUE'
+        element = @download_success_label if type == 'SUCCESS'
+        element = @download_failed_label if type == 'FAILED'
+
+        return if element.nil?
+        element.set_text(DownloadBook.const_get(type.upcase) % nb)
       end
     end
   end
