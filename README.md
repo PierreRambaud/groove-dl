@@ -1,6 +1,7 @@
 #Grooveshark song downloader
 
 [![Build Status](https://travis-ci.org/PierreRambaud/groove-dl.png?branch=master)](https://travis-ci.org/PierreRambaud/groove-dl)
+[![Gem Version](https://badge.fury.io/rb/groove-dl.svg)](http://badge.fury.io/rb/groove-dl)
 
 ##Requirements
 
