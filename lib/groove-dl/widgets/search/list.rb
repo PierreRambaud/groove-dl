@@ -16,6 +16,12 @@ module GrooveDl
         COLUMN_AUTHOR,
         COLUMN_SONG = *(0..5).to_a
 
+        ##
+        # Initialize widgets
+        #
+        # @param [Grooveshark::Client] client Grooveshark client
+        # @param [Gtk::Window] window Gtk app
+        #
         def load(_client, _window)
           set_name('search_list')
 
@@ -40,6 +46,11 @@ module GrooveDl
           add_columns(treeview)
         end
 
+        ##
+        # Create line in the list store
+        #
+        # @param [Array] data Data stored
+        #
         def create_model(data = [])
           @store.clear
           @data = {}
@@ -62,6 +73,11 @@ module GrooveDl
           end
         end
 
+        ##
+        # Add columns on the treeview element
+        #
+        # @param [Gtk::Treeview] treeview Treeview
+        #
         def add_columns(treeview)
           renderer = Gtk::CellRendererToggle.new
           renderer.signal_connect('toggled') do |_cell, path|
@@ -109,6 +125,12 @@ module GrooveDl
           treeview.append_column(column)
         end
 
+        ##
+        # Fixed toggle button
+        #
+        # @param [Gtk::ListStore] model List store
+        # @param [String] path_str Path to row
+        #
         def fixed_toggled(model, path_str)
           path = Gtk::TreePath.new(path_str)
           iter = model.get_iter(path)

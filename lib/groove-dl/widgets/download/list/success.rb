@@ -13,6 +13,12 @@ module GrooveDl
           COLUMN_PATH,
           COLUMN_SIZE = *(0..1).to_a
 
+          ##
+          # Initialize widgets
+          #
+          # @param [Grooveshark::Client] client Grooveshark client
+          # @param [Gtk::Window] window Gtk app
+          #
           def load(_client, _window)
             @data = {}
             sw = Gtk::ScrolledWindow.new
@@ -30,6 +36,11 @@ module GrooveDl
             add_columns(treeview)
           end
 
+          ##
+          # Append row in the list store
+          #
+          # @param [Gtk::TreeIter] i Iterable element
+          #
           def create_model(i)
             iter = @store.append
             path = i[COLUMN_PATH]
@@ -38,6 +49,11 @@ module GrooveDl
             iter[COLUMN_SIZE] = "#{size} MB"
           end
 
+          ##
+          # Add columns on the treeview element
+          #
+          # @param [Gtk::Treeview] treeview Treeview
+          #
           def add_columns(treeview)
             renderer = Gtk::CellRendererText.new
             column = Gtk::TreeViewColumn.new('Path',

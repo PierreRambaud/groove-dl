@@ -8,6 +8,12 @@ module GrooveDl
       class Bar < Gtk::Box
         attr_reader :type, :query
 
+        ##
+        # Initialize widgets
+        #
+        # @param [Grooveshark::Client] client Grooveshark client
+        # @param [Gtk::Window] window Gtk app
+        #
         def load(client, window)
           search_box = Gtk::Box.new(:horizontal, 6)
 

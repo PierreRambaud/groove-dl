@@ -8,6 +8,12 @@ module GrooveDl
       class Bar < Gtk::Box
         attr_reader :type, :query
 
+        ##
+        # Initialize widgets
+        #
+        # @param [Grooveshark::Client] client Grooveshark client
+        # @param [Gtk::Window] window Gtk app
+        #
         def load(_client, window)
           set_name('download_bar')
 

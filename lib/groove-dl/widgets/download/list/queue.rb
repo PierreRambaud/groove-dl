@@ -16,6 +16,12 @@ module GrooveDl
           COLUMN_PGBAR_VALUE,
           COLUMN_PGBAR_TEXT = *(0..2).to_a
 
+          ##
+          # Initialize widgets
+          #
+          # @param [Grooveshark::Client] client Grooveshark client
+          # @param [Gtk::Window] window Gtk app
+          #
           def load(client, window)
             @success = 0
             @failed = 0
@@ -71,6 +77,11 @@ module GrooveDl
             @window.find_by_name('download_book').set_label('QUEUE', @queue)
           end
 
+          ##
+          # Add columns on the treeview element
+          #
+          # @param [Gtk::Treeview] treeview Treeview
+          #
           def add_columns(treeview)
             renderer = Gtk::CellRendererText.new
             column = Gtk::TreeViewColumn.new('Path',
@@ -88,6 +99,9 @@ module GrooveDl
             treeview.append_column(column)
           end
 
+          ##
+          # Download files in queue
+          #
           def download
             concurrency = @window.find_by_name('concurrency_entry').text.to_i
             concurrency = 5 if concurrency == 0
@@ -97,29 +111,58 @@ module GrooveDl
               @data.each do |_id, s|
                 nb += 1
                 Thread.new do
-                  begin
-                    @downloader.download(s[:song], s[:iter])
-                    @window.find_by_name('download_success_list')
-                      .create_model(s[:iter])
-                    @window.find_by_name('download_book')
-                      .set_label('SUCCESS', @success += 1)
-                  rescue StandardError => e
-                    GrooveDl.configuration.logger.error(e)
-                    @window.find_by_name('download_failed_list')
-                      .create_model(s[:iter], e.message)
-                    @window.find_by_name('download_book')
-                      .set_label('FAILED', @failed += 1)
-                  end
-
-                  @window.find_by_name('download_book')
-                    .set_label('QUEUE', @queue -= 1)
-                  @store.remove(s[:iter])
-
+                  download_file(s)
                   nb -= 1
                 end
                 sleep(0.5) until nb < concurrency
               end
             end
+          end
+
+          ##
+          # Download song
+          #
+          # @param [Grooveshark::Song] song Song to download
+          #
+          def download_file(song)
+            begin
+              @downloader.download(song[:song], song[:iter])
+              notify_success(song)
+            rescue Errors::AlreadyDownloaded => e
+              GrooveDl.configuration.logger.info(e.message)
+              notify_success(song)
+            rescue Grooveshark::GeneralError => e
+              GrooveDl.configuration.logger.error(e)
+              notify_error(song, e)
+            end
+
+            @window.find_by_name('download_book')
+              .set_label('QUEUE', @queue -= 1)
+            @store.remove(song[:iter])
+          end
+
+          ##
+          # Notify success
+          #
+          # @param [Grooveshark::Song] song Song displayed in success page
+          #
+          def notify_success(song)
+            @window.find_by_name('download_success_list')
+              .create_model(song[:iter])
+            @window.find_by_name('download_book')
+              .set_label('SUCCESS', @success += 1)
+          end
+
+          ##
+          # Notify erro
+          #
+          # @param [Grooveshark::Song] song Song displayed in failed page
+          #
+          def notify_error(song, e)
+            @window.find_by_name('download_failed_list')
+              .create_model(song[:iter], e.message)
+            @window.find_by_name('download_book')
+              .set_label('FAILED', @failed += 1)
           end
         end
       end

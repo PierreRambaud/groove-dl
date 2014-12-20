@@ -12,6 +12,12 @@ module GrooveDl
         SUCCESS = 'Success (%d)'
         FAILED = 'Failed (%d)'
 
+        ##
+        # Initialize widgets
+        #
+        # @param [Grooveshark::Client] client Grooveshark client
+        # @param [Gtk::Window] window Gtk app
+        #
         def load(client, window)
           @window = window
           set_name('download_book')
@@ -47,6 +53,12 @@ module GrooveDl
           append_page(download_failed_list, @download_failed_label)
         end
 
+        ##
+        # Set label for page in notebook element
+        #
+        # @param [String] type Page type
+        # @param [Integer] nb Number of element in this page
+        #
         def set_label(type, nb)
           element = @download_label if type == 'QUEUE'
           element = @download_success_label if type == 'SUCCESS'
