@@ -28,8 +28,8 @@ $ bundle exec rake install
 Run `groove-dl` and a gtk app will be displayed, you can:
 
 * search for playlist or song
-* add them to queue
 * choose download directory
+* add them to queue
 * download concurrently
 
 

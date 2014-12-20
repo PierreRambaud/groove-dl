@@ -4,7 +4,6 @@ require File.expand_path('../lib/groove-dl/version', __FILE__)
 Gem::Specification.new do |s|
   s.name = 'groove-dl'
   s.version = GrooveDl::VERSION
-  s.date = '2014-11-13'
   s.authors = ['Pierre Rambaud']
   s.email = 'pierre.rambaud86@gmail.com'
   s.license = 'GPL-3.0'
