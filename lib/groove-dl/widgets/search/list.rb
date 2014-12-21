@@ -91,7 +91,7 @@ module GrooveDl
           column.fixed_width = 30
           column.set_clickable(true)
           column.signal_connect('clicked') do
-            @store.each do |model, path, iter|
+            @store.each do |_model, _path, iter|
               fixed = iter[COLUMN_FIXED]
               fixed ^= 1
               iter[COLUMN_FIXED] = fixed
