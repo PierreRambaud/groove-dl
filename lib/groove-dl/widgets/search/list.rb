@@ -89,6 +89,15 @@ module GrooveDl
                                            'active' => COLUMN_FIXED)
           column.sizing = Gtk::TreeViewColumn::Sizing::FIXED
           column.fixed_width = 30
+          column.set_clickable(true)
+          column.signal_connect('clicked') do
+            @store.each do |model, path, iter|
+              fixed = iter[COLUMN_FIXED]
+              fixed ^= 1
+              iter[COLUMN_FIXED] = fixed
+            end
+          end
+
           treeview.append_column(column)
 
           renderer = Gtk::CellRendererText.new
