@@ -20,6 +20,7 @@ module GrooveDl
           search_bar = Gtk::Entry.new
           search_bar.set_name('search_bar')
           search_bar.text = 'CruciAGoT'
+
           search_box.pack_start(search_bar,
                                 expand: true,
                                 fill: true,
@@ -37,6 +38,17 @@ module GrooveDl
                                 padding: 5)
 
           button = Gtk::Button.new(stock_id: Gtk::Stock::FIND)
+          button.set_name('search_button')
+          search_box.pack_start(button,
+                                expand: false,
+                                fill: false,
+                                padding: 10)
+
+          pack_start(search_box,
+                     expand: false,
+                     padding: 10)
+
+          # Signals
           button.signal_connect('released') do
             @type = search_type.active_text
             @query = search_bar.text
@@ -52,14 +64,9 @@ module GrooveDl
             window.find_by_name('search_list').create_model(results)
           end
 
-          search_box.pack_start(button,
-                                expand: false,
-                                fill: false,
-                                padding: 10)
-
-          pack_start(search_box,
-                     expand: false,
-                     padding: 10)
+          search_bar.signal_connect('activate') do
+            button.signal_emit('released')
+          end
         end
       end
     end
