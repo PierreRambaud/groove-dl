@@ -19,7 +19,6 @@ module GrooveDl
 
           search_bar = Gtk::Entry.new
           search_bar.set_name('search_bar')
-          search_bar.text = 'CruciAGoT'
 
           search_box.pack_start(search_bar,
                                 expand: true,
