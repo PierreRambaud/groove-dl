@@ -14,7 +14,7 @@ module GrooveDl
         COLUMN_ID,
         COLUMN_NAME,
         COLUMN_AUTHOR,
-        COLUMN_SONG = *(0..5).to_a
+        COLUMN_SONG = *(0..4).to_a
 
         ##
         # Initialize widgets

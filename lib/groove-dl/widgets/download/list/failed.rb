@@ -11,7 +11,7 @@ module GrooveDl
           attr_reader :store, :data
 
           COLUMN_PATH,
-          COLUMN_REASON = *(0..2).to_a
+          COLUMN_REASON = *(0..1).to_a
 
           ##
           # Initialize widgets
