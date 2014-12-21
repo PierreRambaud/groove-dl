@@ -19,8 +19,7 @@ module GrooveDl
 
           download_box = Gtk::Box.new(:horizontal, 6)
 
-          add_button = Gtk::Button.new(label: 'Add to queue',
-                                       stock_id: Gtk::Stock::SAVE)
+          add_button = Gtk::Button.new(stock_id: Gtk::Stock::ADD)
 
           add_button.signal_connect('released') do
             l = window.find_by_name('download_list')
@@ -64,8 +63,7 @@ module GrooveDl
             concurrency_entry.text = value.to_s unless value == 0
           end
 
-          download_button = Gtk::Button.new(label: 'Download',
-                                            stock_id: Gtk::Stock::SAVE)
+          download_button = Gtk::Button.new(stock_id: Gtk::Stock::SAVE)
 
           download_button.signal_connect('released') do
             download_button.sensitive = false

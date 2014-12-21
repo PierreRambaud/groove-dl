@@ -36,7 +36,7 @@ module GrooveDl
                                 fill: true,
                                 padding: 5)
 
-          button = Gtk::Button.new(label: 'Search', stock_id: Gtk::Stock::FIND)
+          button = Gtk::Button.new(stock_id: Gtk::Stock::FIND)
           button.signal_connect('released') do
             @type = search_type.active_text
             @query = search_bar.text

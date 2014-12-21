@@ -3,6 +3,7 @@ module GrooveDl
   # Bootstraper for the application
   class App < Gtk::Window
     def initialize
+      Gtk::Settings.default.gtk_button_images = true
       super
 
       client = Grooveshark::Client.new
