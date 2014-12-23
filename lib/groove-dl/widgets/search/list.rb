@@ -8,9 +8,8 @@ module GrooveDl
       class List < Gtk::Box
         attr_reader :data
         attr_reader :store
-        attr_reader :selection
 
-        COLUMN_FIXED,
+        COLUMN_CHECKBOX,
         COLUMN_ID,
         COLUMN_NAME,
         COLUMN_AUTHOR,
@@ -25,7 +24,6 @@ module GrooveDl
         def load(_client, _window)
           set_name('search_list')
 
-          @selection = {}
           sw = Gtk::ScrolledWindow.new
           sw.shadow_type = Gtk::ShadowType::ETCHED_IN
           sw.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC)
@@ -56,7 +54,7 @@ module GrooveDl
           @data = {}
           data.each do |element|
             iter = @store.append
-            iter[COLUMN_FIXED] = false
+            iter[COLUMN_CHECKBOX] = false
             if element.is_a?(Grooveshark::Song)
               @data[element.id.to_i] = element
               iter[COLUMN_ID] = element.id.to_i
@@ -86,15 +84,15 @@ module GrooveDl
 
           column = Gtk::TreeViewColumn.new('X',
                                            renderer,
-                                           'active' => COLUMN_FIXED)
+                                           'active' => COLUMN_CHECKBOX)
           column.sizing = Gtk::TreeViewColumn::Sizing::FIXED
           column.fixed_width = 30
           column.set_clickable(true)
           column.signal_connect('clicked') do
             @store.each do |_model, _path, iter|
-              fixed = iter[COLUMN_FIXED]
+              fixed = iter[COLUMN_CHECKBOX]
               fixed ^= 1
-              iter[COLUMN_FIXED] = fixed
+              iter[COLUMN_CHECKBOX] = fixed
             end
           end
 
@@ -143,11 +141,9 @@ module GrooveDl
         def fixed_toggled(model, path_str)
           path = Gtk::TreePath.new(path_str)
           iter = model.get_iter(path)
-          fixed = iter[COLUMN_FIXED]
+          fixed = iter[COLUMN_CHECKBOX]
           fixed ^= 1
-          iter[COLUMN_FIXED] = fixed
-          @selection[iter[COLUMN_ID]] = @data[iter[COLUMN_ID]] if fixed
-          @selection.delete(iter[COLUMN_ID]) unless fixed
+          iter[COLUMN_CHECKBOX] = fixed
         end
       end
     end

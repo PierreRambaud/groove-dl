@@ -24,7 +24,16 @@ module GrooveDl
           add_button.signal_connect('released') do
             l = window.find_by_name('download_list')
             l.store.clear
-            l.create_model(window.find_by_name('search_list').selection)
+            search_list = window.find_by_name('search_list')
+            selected = {}
+            column_id = GrooveDl::Widgets::Search::List::COLUMN_ID
+            column_checkbox = GrooveDl::Widgets::Search::List::COLUMN_CHECKBOX
+            search_list.store.each do |_model, _path, iter|
+              next unless iter[column_checkbox]
+              selected[iter[column_id]] = search_list.data[iter[column_id]]
+            end
+
+            l.create_model(selected)
           end
 
           download_box.pack_start(add_button,
