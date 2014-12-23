@@ -16,12 +16,14 @@ module GrooveDl
           item = Gtk::ImageMenuItem.new(stock_id: Gtk::Stock::OPEN)
           item.signal_connect('activate') do
             treeview = window.find_by_name('download_success_list').treeview
-            path = Gtk::TreePath.new(treeview.selection.selected)
-            iter = treeview.model.get_iter(path)
+            iter = treeview.selection.selected
+            Thread.new do
+              path = iter[Download::List::Queue::COLUMN_PATH]
+              system("gnome-open #{Shellwords.escape(path)}")
+            end
           end
 
           append(item)
-
           show_all
         end
       end
