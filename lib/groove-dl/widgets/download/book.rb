@@ -32,11 +32,15 @@ module GrooveDl
           @download_label.set_name('download_label')
           append_page(download_list, @download_label)
 
+          # Success menu
+          menu_success = Widgets::Menu::Success.new
+          menu_success.load(client, window)
+
           # Success list
           download_success_list =
             Widgets::Download::List::Success.new(:vertical, 6)
           download_success_list.set_name('download_success_list')
-          download_success_list.load(client, window)
+          download_success_list.load(client, window, menu_success)
 
           @download_success_label = Gtk::Label.new(SUCCESS % 0)
           @download_success_label.set_name('download_success_label')
