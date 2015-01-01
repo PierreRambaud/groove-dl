@@ -75,8 +75,10 @@ module GrooveDl
           download_button = Gtk::Button.new(stock_id: Gtk::Stock::SAVE)
 
           download_button.signal_connect('released') do
+            download_list = window.find_by_name('download_list')
+            next if download_list.queue.zero?
             download_button.sensitive = false
-            window.find_by_name('download_list').download
+            download_list.download
           end
 
           download_box.pack_start(download_button,
