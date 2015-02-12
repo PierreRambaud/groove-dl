@@ -23,6 +23,7 @@ lib/groove-dl/widgets/download/book.rb
 lib/groove-dl/widgets/download/list/failed.rb
 lib/groove-dl/widgets/download/list/queue.rb
 lib/groove-dl/widgets/download/list/success.rb
+lib/groove-dl/widgets/menu/success.rb
 lib/groove-dl/widgets/search/bar.rb
 lib/groove-dl/widgets/search/list.rb
 spec/groove-dl/cli_spec.rb
