@@ -16,13 +16,7 @@ GrooveDl::CLI.options.command 'search' do
     query = opts[:s] if opts[:s]
     query = opts[:p] if opts[:p]
 
-    results = client.request('getResultsFromSearch',
-                             type: type,
-                             query: query)['result']
-    results.map! do |data|
-      next Grooveshark::Song.new data if type == 'Songs'
-      data
-    end
+    results = client.search(type, query)
 
     displayer = GrooveDl::Displayer.new(results, type)
     displayer.render

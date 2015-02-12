@@ -43,10 +43,10 @@ module GrooveDl
     # @return [Nil]
     #
     def add_row(table, data)
-      table.add_row([data['playlist_id'],
-                     data['name'],
-                     data['f_name'],
-                     data['num_songs']]) if @type == 'Playlists'
+      table.add_row([data.id,
+                     data.name,
+                     data.username,
+                     data.num_songs]) if @type == 'Playlists'
       table.add_row([data.id,
                      data.album,
                      data.artist,

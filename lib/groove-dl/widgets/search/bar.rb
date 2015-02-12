@@ -53,13 +53,7 @@ module GrooveDl
             @type = search_type.active_text
             @query = search_bar.text
             next if @type.empty? || @query.empty?
-            search = client.request('getResultsFromSearch',
-                                    type: @type,
-                                    query: @query)
-            results = search['result'].map do |data|
-              next Grooveshark::Song.new data if type == 'Songs'
-              data
-            end if search.key?('result')
+            results = client.search(@type, @query)
 
             window.find_by_name('search_list').create_model(results)
           end

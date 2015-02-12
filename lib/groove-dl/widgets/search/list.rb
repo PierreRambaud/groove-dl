@@ -62,11 +62,11 @@ module GrooveDl
               iter[COLUMN_AUTHOR] = element.artist
               iter[COLUMN_SONG] = element.album
             else
-              @data[element['playlist_id'].to_i] = element
-              iter[COLUMN_ID] = element['playlist_id'].to_i
-              iter[COLUMN_NAME] = element['name']
-              iter[COLUMN_AUTHOR] = element['f_name']
-              iter[COLUMN_SONG] = element['num_songs']
+              @data[element.id.to_i] = element
+              iter[COLUMN_ID] = element.id.to_i.to_i
+              iter[COLUMN_NAME] = element.name
+              iter[COLUMN_AUTHOR] = element.username
+              iter[COLUMN_SONG] = element.num_songs.to_s
             end
           end
         end
