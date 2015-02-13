@@ -96,11 +96,11 @@ module GrooveDl
     # @param [Grooveshark::Song] song Song
     #
     def build_path(output_directory, song)
-      sprintf('%s/%s/%s/%s.mp3',
-              output_directory,
-              song.artist,
-              song.album,
-              song.name)
+      format('%s/%s/%s/%s.mp3',
+             output_directory,
+             song.artist,
+             song.album,
+             song.name)
     end
 
     ##

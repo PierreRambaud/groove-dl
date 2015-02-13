@@ -42,16 +42,17 @@ module GrooveDl
     end
 
     it 'should render songs' do
-      playlist = { 'playlist_id' => 1,
-                   'name' => 'Someting',
-                   'f_name' => 'GoT',
-                   'num_songs' => 1 }
+      playlist = Grooveshark::Playlist.new(double,
+                                           'playlist_id' => 1,
+                                           'name' => 'Someting',
+                                           'f_name' => 'GoT',
+                                           'num_songs' => 1)
       displayer = Displayer.new([playlist], 'Playlists')
 
       str = '+----+----------+--------+----------+
 |             Playlists             |
 +----+----------+--------+----------+
-| Id | Nam      | Author | NumSongs |
+| Id | Name     | Author | NumSongs |
 +----+----------+--------+----------+
 | 1  | Someting | GoT    | 1        |
 +----+----------+--------+----------+'

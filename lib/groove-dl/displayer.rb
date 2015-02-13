@@ -31,7 +31,7 @@ module GrooveDl
 
     def headers
       return %w(Id Album Artist Song) if @type == 'Songs'
-      return %w(Id Nam Author NumSongs) if @type == 'Playlists'
+      return %w(Id Name Author NumSongs) if @type == 'Playlists'
     end
 
     ##
