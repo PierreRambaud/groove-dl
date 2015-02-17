@@ -19,7 +19,7 @@ module GrooveDl
             iter = treeview.selection.selected
             Thread.new do
               path = iter[Download::List::Queue::COLUMN_PATH]
-              system("gnome-open #{Shellwords.escape(path)}")
+              system("xdg-open #{Shellwords.escape(path)}")
             end
           end
 
