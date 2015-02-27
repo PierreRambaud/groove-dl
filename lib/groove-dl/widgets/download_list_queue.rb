@@ -37,7 +37,8 @@ module GrooveDl
         create_model(selected)
 
         @queue = @songs.count
-        @app.get_object('download_label_queue').set_text('Queue (%d)' % @queue)
+        @app.get_object('download_label_queue')
+          .set_text(format('Queue (%d)', @queue))
       end
 
       def create_model(data)
