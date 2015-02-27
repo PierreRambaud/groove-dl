@@ -1,55 +1,20 @@
 # -*- coding: utf-8 -*-
 module GrooveDl
   # Bootstraper for the application
-  class App < Gtk::Window
-    def initialize
+  class App < Gtk::Builder
+    def initialize(path)
+      super()
+
       Gtk::Settings.default.gtk_button_images = true
-      super
+      add_from_file(path)
+
+      @main_window = get_object('main_window')
+      @main_window.set_window_position(Gtk::Window::Position::CENTER)
+      @main_window.signal_connect('destroy') { Gtk.main_quit }
+      @main_window.show_all
 
       client = Grooveshark::Client.new
-      box = Gtk::Box.new(:vertical)
-
-      search_bar = Widgets::Search::Bar.new(:vertical, 6)
-      search_bar.load(client, self)
-
-      search_list = Widgets::Search::List.new(:vertical, 6)
-      search_list.load(client, self)
-
-      download_bar = Widgets::Download::Bar.new(:vertical, 6)
-      download_bar.load(client, self)
-
-      download_book = Widgets::Download::Book.new
-      download_book.load(client, self)
-
-      box.pack_start(search_bar, expand: false, fill: true, padding: 10)
-      box.pack_start(search_list, expand: true, fill: true, padding: 5)
-      box.pack_start(download_bar, expand: false, fill: true, padding: 10)
-      box.pack_start(download_book, expand: true, fill: true, padding: 5)
-
-      add(box)
-
-      init_default
-    end
-
-    def init_default
-      signal_connect('destroy') do
-        Gtk.main_quit
-      end
-
-      set_title('Grooveshark Downloader')
-      set_default_size(1024, 768)
-      set_window_position(:center)
-      show_all
-    end
-
-    def find_by_name(element = self, name)
-      return element if element.name == name
-      element.children.each do |child|
-        result = find_by_name(child, name)
-        return result unless result.nil?
-      end if element.respond_to?(:children)
-
-      nil
+      Widgets::Search.new(client, self)
     end
   end
 end

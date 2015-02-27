@@ -6,15 +6,9 @@ require File.expand_path('../../lib/groove-dl', __FILE__)
 require 'gtk3'
 require 'shellwords'
 require 'groove-dl/app'
-require 'groove-dl/widgets/menu/success'
-require 'groove-dl/widgets/download/bar'
-require 'groove-dl/widgets/download/list/queue'
-require 'groove-dl/widgets/download/list/failed'
-require 'groove-dl/widgets/download/list/success'
-require 'groove-dl/widgets/download/book'
-require 'groove-dl/widgets/search/bar'
-require 'groove-dl/widgets/search/list'
+require 'groove-dl/widgets/events'
+require 'groove-dl/widgets/search'
 
 Gtk.init
-GrooveDl::App.new
+GrooveDl::App.new('glade/groove-dl.glade')
 Gtk.main
