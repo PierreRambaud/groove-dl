@@ -146,11 +146,11 @@ module GrooveDl
     #
     def process_gui_response(object)
       proc do |response|
-        pgbar_value = Widgets::Download::List::Queue::COLUMN_PGBAR_VALUE
-        pgbar_text = Widgets::Download::List::Queue::COLUMN_PGBAR_TEXT
+        pgbar_value = Widgets::DownloadList::QUEUE_COLUMN_PGBAR_VALUE
+        pgbar_text = Widgets::DownloadList::QUEUE_COLUMN_PGBAR_TEXT
 
         total_size = response['content-length'].to_i
-        path = object[Widgets::Download::List::Queue::COLUMN_PATH]
+        path = object[Widgets::DownloadList::QUEUE_COLUMN_PATH]
         if File.exist?(path) &&
            File.size?(path) == total_size
           object[pgbar_value] = 100

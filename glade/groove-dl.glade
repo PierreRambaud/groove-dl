@@ -2,6 +2,14 @@
 <!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
+  <object class="GtkListStore" id="download_failed_list_store">
+    <columns>
+      <!-- column-name path -->
+      <column type="gchararray"/>
+      <!-- column-name reason -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkListStore" id="download_queue_list_store">
     <columns>
       <!-- column-name path -->
@@ -9,6 +17,14 @@
       <!-- column-name progress_value -->
       <column type="gint"/>
       <!-- column-name progress_text -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="download_success_list_store">
+    <columns>
+      <!-- column-name path -->
+      <column type="gchararray"/>
+      <!-- column-name size -->
       <column type="gchararray"/>
     </columns>
   </object>
@@ -247,7 +263,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="download">
+              <object class="GtkButton" id="btn_download">
                 <property name="label">gtk-save</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -258,6 +274,7 @@
                 <property name="margin_bottom">5</property>
                 <property name="use_stock">True</property>
                 <property name="always_show_image">True</property>
+                <signal name="clicked" handler="on_btn_download_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">5</property>
@@ -374,6 +391,7 @@
                   <object class="GtkTreeView" id="download_success">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="model">download_success_list_store</property>
                     <child internal-child="selection">
                       <object class="GtkTreeSelection" id="treeview-selection3"/>
                     </child>
@@ -382,6 +400,12 @@
                         <property name="min_width">650</property>
                         <property name="title" translatable="yes">Path</property>
                         <property name="expand">True</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="download_success_cell_path"/>
+                          <attributes>
+                            <attribute name="text">1</attribute>
+                          </attributes>
+                        </child>
                       </object>
                     </child>
                     <child>
@@ -389,6 +413,12 @@
                         <property name="min_width">100</property>
                         <property name="title" translatable="yes">Size</property>
                         <property name="expand">True</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="download_success_cell_size"/>
+                          <attributes>
+                            <attribute name="text">1</attribute>
+                          </attributes>
+                        </child>
                       </object>
                     </child>
                   </object>
@@ -418,6 +448,7 @@
                   <object class="GtkTreeView" id="download_failed">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="model">download_failed_list_store</property>
                     <child internal-child="selection">
                       <object class="GtkTreeSelection" id="treeview-selection2"/>
                     </child>
@@ -425,12 +456,24 @@
                       <object class="GtkTreeViewColumn" id="failed_path">
                         <property name="min_width">650</property>
                         <property name="title" translatable="yes">Path</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="download_failed_cell_path"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
                       </object>
                     </child>
                     <child>
                       <object class="GtkTreeViewColumn" id="failed_reason">
                         <property name="title" translatable="yes">Reason</property>
                         <property name="expand">True</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="download_failed_cell_reason"/>
+                          <attributes>
+                            <attribute name="text">1</attribute>
+                          </attributes>
+                        </child>
                       </object>
                     </child>
                   </object>
