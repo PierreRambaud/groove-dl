@@ -10,8 +10,12 @@ module GrooveDl
         @client = client
         @app = app
 
-        app.connect_signals do |handler|
-          method(handler) if respond_to?(handler)
+        self.methods.each do |name|
+          unless name.match(/^on_/)
+            next
+          end
+
+          @app.signals_list[name.to_s] = method(name)
         end
       end
     end

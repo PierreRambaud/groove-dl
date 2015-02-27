@@ -2,6 +2,16 @@
 <!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
+  <object class="GtkListStore" id="download_queue_list_store">
+    <columns>
+      <!-- column-name path -->
+      <column type="gchararray"/>
+      <!-- column-name progress_value -->
+      <column type="gint"/>
+      <!-- column-name progress_text -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkWindow" id="main_window">
     <property name="width_request">1024</property>
     <property name="height_request">768</property>
@@ -198,6 +208,7 @@
                 <property name="use_stock">True</property>
                 <property name="xalign">0.46000000834465027</property>
                 <property name="always_show_image">True</property>
+                <signal name="clicked" handler="on_btn_add_to_queue_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -215,7 +226,7 @@
                 <property name="label" translatable="yes">Concurrency</property>
               </object>
               <packing>
-                <property name="left_attach">2</property>
+                <property name="left_attach">3</property>
                 <property name="top_attach">0</property>
               </packing>
             </child>
@@ -231,7 +242,7 @@
                 <property name="placeholder_text" translatable="yes">5</property>
               </object>
               <packing>
-                <property name="left_attach">3</property>
+                <property name="left_attach">4</property>
                 <property name="top_attach">0</property>
               </packing>
             </child>
@@ -249,7 +260,7 @@
                 <property name="always_show_image">True</property>
               </object>
               <packing>
-                <property name="left_attach">4</property>
+                <property name="left_attach">5</property>
                 <property name="top_attach">0</property>
               </packing>
             </child>
@@ -262,6 +273,28 @@
                 <property name="margin_top">5</property>
                 <property name="margin_bottom">5</property>
                 <property name="hexpand">True</property>
+                <property name="action">select-folder</property>
+                <property name="title" translatable="yes">Select a directory</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_clear_queue">
+                <property name="label">gtk-clear</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="margin_left">5</property>
+                <property name="margin_right">5</property>
+                <property name="margin_top">5</property>
+                <property name="margin_bottom">5</property>
+                <property name="use_stock">True</property>
+                <property name="yalign">0.44999998807907104</property>
+                <property name="always_show_image">True</property>
+                <signal name="clicked" handler="on_btn_clear_queue_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -288,6 +321,7 @@
                   <object class="GtkTreeView" id="download_queue">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="model">download_queue_list_store</property>
                     <child internal-child="selection">
                       <object class="GtkTreeSelection" id="treeview-selection4"/>
                     </child>
@@ -296,12 +330,25 @@
                         <property name="resizable">True</property>
                         <property name="min_width">650</property>
                         <property name="title" translatable="yes">Path</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="download_queue_cell_path"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
                       </object>
                     </child>
                     <child>
                       <object class="GtkTreeViewColumn" id="queue_progress">
                         <property name="title" translatable="yes">Progress</property>
                         <property name="expand">True</property>
+                        <child>
+                          <object class="GtkCellRendererProgress" id="download_queue_cell_progress"/>
+                          <attributes>
+                            <attribute name="text">2</attribute>
+                            <attribute name="value">1</attribute>
+                          </attributes>
+                        </child>
                       </object>
                     </child>
                   </object>
