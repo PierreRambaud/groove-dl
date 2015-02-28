@@ -214,16 +214,17 @@ module GrooveDl
         end
       end
 
-
       ##
       # Open menu on right click
       #
       def on_download_success_button_press_event(widget, event)
-        if event.is_a?(Gdk::EventButton) && event.button == RIGHT_CLICK
-          path, _model = widget.get_path_at_pos(event.x, event.y)
-          widget.selection.select_path(path)
-          @app.get_object('success_menu').popup(nil, nil, event.button, event.time)
-        end
+        return unless event.is_a?(Gdk::EventButton) &&
+                      event.button == RIGHT_CLICK
+
+        path, _model = widget.get_path_at_pos(event.x, event.y)
+        widget.selection.select_path(path)
+        @app.get_object('success_menu')
+          .popup(nil, nil, event.button, event.time)
       end
     end
   end
