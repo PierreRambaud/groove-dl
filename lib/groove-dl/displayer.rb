@@ -7,8 +7,8 @@ module GrooveDl
     ##
     # Initialize Displayer
     #
-    # @params [Array] result The result from the search
-    # @params [String] type The search type
+    # @param [Array] result The result from the search
+    # @param [String] type The search type
     #
     # @return [Nil]
     #
@@ -37,8 +37,8 @@ module GrooveDl
     ##
     # Add row into table
     #
-    # @params [Terminal::Table] table Table in which row will be added
-    # @params [Array] result The result from the search
+    # @param [Terminal::Table] table Table in which row will be added
+    # @param [Array] result The result from the search
     #
     # @return [Nil]
     #

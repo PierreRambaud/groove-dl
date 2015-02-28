@@ -8,8 +8,7 @@ require 'shellwords'
 require 'groove-dl/app'
 require 'groove-dl/widgets/events'
 require 'groove-dl/widgets/search'
-require 'groove-dl/widgets/download_bar'
-require 'groove-dl/widgets/download_list'
+require 'groove-dl/widgets/download'
 
 Gtk.init
 GrooveDl::App.new('glade/groove-dl.glade')

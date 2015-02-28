@@ -3,8 +3,8 @@ module GrooveDl
   # Widgets components
   module Widgets
     # Download bar section
-    class DownloadList < Events
-      attr_accessor :search_list, :songs
+    class Download < Events
+      attr_accessor :search_list, :songs, :downloader
       attr_accessor :failed, :success, :queue
 
       SUCCESS_COLUMN_PATH,
@@ -17,6 +17,15 @@ module GrooveDl
       QUEUE_COLUMN_PGBAR_VALUE,
       QUEUE_COLUMN_PGBAR_TEXT = *(0..2).to_a
 
+      ##
+      # Initialize download list and download button
+      #
+      # @param [Grooveshark::Client] client Grooveshark client
+      # @param [Gtk::Builder] app Application created by Gtk builder
+      # @param [Search] search_list Search class for getting list
+      #
+      # @return [Download]
+      #
       def initialize(client, app, search_list)
         super(client, app)
         @songs = {}
@@ -26,8 +35,12 @@ module GrooveDl
         @search_list = search_list
         @downloader = GrooveDl::Downloader.new(@client)
         @downloader.type = 'gui'
+        @app.get_object('directory_chooser').filename = Dir.tmpdir
       end
 
+      ##
+      # Event when button download is clicked
+      #
       def on_btn_download_clicked
         return if @queue.zero?
         @app.get_object('btn_clear_queue').sensitive = false
@@ -36,10 +49,16 @@ module GrooveDl
         download_songs
       end
 
+      ##
+      # Event when button clear queue is clicked
+      #
       def on_btn_clear_queue_clicked
         @app.get_object('download_queue_list_store').clear
       end
 
+      ##
+      # Event when button add to queue is clicked
+      #
       def on_btn_add_to_queue_clicked
         selected = {}
         column_id = GrooveDl::Widgets::Search::COLUMN_ID
@@ -60,6 +79,11 @@ module GrooveDl
           .set_text(format('Queue (%d)', @queue))
       end
 
+      ##
+      # Append row in queue list store
+      #
+      # @param [Hash] data Data parsed
+      #
       def create_queue_item(data)
         data.each do |id, element|
           if element.is_a?(Grooveshark::Song)

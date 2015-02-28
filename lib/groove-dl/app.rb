@@ -18,8 +18,7 @@ module GrooveDl
 
       client = Grooveshark::Client.new
       search_list = Widgets::Search.new(client, self)
-      Widgets::DownloadBar.new(client, self)
-      Widgets::DownloadList.new(client, self, search_list)
+      Widgets::Download.new(client, self, search_list)
 
       connect_signals do |handler|
         @signals_list[handler] if @signals_list.key?(handler)

@@ -6,6 +6,9 @@ module GrooveDl
     class Events
       attr_reader :client, :app
 
+      ##
+      # Initialize events for signals
+      #
       def initialize(client, app)
         @client = client
         @app = app

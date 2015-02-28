@@ -25,7 +25,7 @@ module GrooveDl
     ##
     # Download song
     #
-    # @params [String] song_id Song id
+    # @param [String] song_id Song id
     #
     # @return [Array]
     #
@@ -39,7 +39,7 @@ module GrooveDl
     ##
     # Download playlist
     #
-    # @params [String] playlist_id Playlist id
+    # @param [String] playlist_id Playlist id
     #
     # @return [Array]
     #
@@ -146,11 +146,11 @@ module GrooveDl
     #
     def process_gui_response(object)
       proc do |response|
-        pgbar_value = Widgets::DownloadList::QUEUE_COLUMN_PGBAR_VALUE
-        pgbar_text = Widgets::DownloadList::QUEUE_COLUMN_PGBAR_TEXT
+        pgbar_value = Widgets::Download::QUEUE_COLUMN_PGBAR_VALUE
+        pgbar_text = Widgets::Download::QUEUE_COLUMN_PGBAR_TEXT
 
         total_size = response['content-length'].to_i
-        path = object[Widgets::DownloadList::QUEUE_COLUMN_PATH]
+        path = object[Widgets::Download::QUEUE_COLUMN_PATH]
         if File.exist?(path) &&
            File.size?(path) == total_size
           object[pgbar_value] = 100
