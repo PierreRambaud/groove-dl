@@ -7,6 +7,8 @@ module GrooveDl
       attr_accessor :search_list, :songs, :downloader
       attr_accessor :failed, :success, :queue
 
+      RIGHT_CLICK = 3
+
       SUCCESS_COLUMN_PATH,
       SUCCESS_COLUMN_SIZE = *(0..1).to_a
 
@@ -192,11 +194,36 @@ module GrooveDl
       # Notify erro
       #
       # @param [Grooveshark::Song] song Song displayed in failed page
+      # @param [StandardError] e Exception to retrieve message
       #
       def notify_error(song, e)
         create_failed_item(song[:iter], e.message)
         @app.get_object('download_label_failed')
           .set_text(format('Failed (%d)', @failed += 1))
+      end
+
+      ##
+      # Open downloaded song
+      #
+      def on_menu_open_activate
+        treeview = @app.get_object('download_success')
+        iter = treeview.selection.selected
+        Thread.new do
+          path = iter[Download::QUEUE_COLUMN_PATH]
+          system("xdg-open #{Shellwords.escape(path)}")
+        end
+      end
+
+
+      ##
+      # Open menu on right click
+      #
+      def on_download_success_button_press_event(widget, event)
+        if event.is_a?(Gdk::EventButton) && event.button == RIGHT_CLICK
+          path, _model = widget.get_path_at_pos(event.x, event.y)
+          widget.selection.select_path(path)
+          @app.get_object('success_menu').popup(nil, nil, event.button, event.time)
+        end
       end
     end
   end
