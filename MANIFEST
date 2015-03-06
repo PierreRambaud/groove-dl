@@ -8,6 +8,7 @@ README.md
 Rakefile
 bin/groove-dl
 bin/groove-dl-cli
+glade/groove-dl.glade
 groove-dl.gemspec
 lib/groove-dl.rb
 lib/groove-dl/app.rb
@@ -18,14 +19,9 @@ lib/groove-dl/displayer.rb
 lib/groove-dl/downloader.rb
 lib/groove-dl/errors.rb
 lib/groove-dl/version.rb
-lib/groove-dl/widgets/download/bar.rb
-lib/groove-dl/widgets/download/book.rb
-lib/groove-dl/widgets/download/list/failed.rb
-lib/groove-dl/widgets/download/list/queue.rb
-lib/groove-dl/widgets/download/list/success.rb
-lib/groove-dl/widgets/menu/success.rb
-lib/groove-dl/widgets/search/bar.rb
-lib/groove-dl/widgets/search/list.rb
+lib/groove-dl/widgets/download.rb
+lib/groove-dl/widgets/events.rb
+lib/groove-dl/widgets/search.rb
 spec/groove-dl/cli_spec.rb
 spec/groove-dl/displayer_spec.rb
 spec/groove-dl/downloader_spec.rb
