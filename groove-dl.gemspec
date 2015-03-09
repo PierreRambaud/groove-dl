@@ -7,15 +7,15 @@ Gem::Specification.new do |s|
   s.authors = ['Pierre Rambaud']
   s.email = 'pierre.rambaud86@gmail.com'
   s.license = 'GPL-3.0'
-  s.summary = 'Download grooveshark songs.'
+  s.summary = 'Grooveshark songs downloader.'
   s.homepage = 'http://github.com/PierreRambaud/groove-dl'
-  s.description = 'Grooveshark downloader allow you to choose' \
-                  'songs and download them.'
+  s.description = 'Grooveshark downloader allow you to search, choose ' \
+                  'playlists and songs and download them.'
   s.executables = ['groove-dl', 'groove-dl-cli']
 
   s.files = File.read(File.expand_path('../MANIFEST', __FILE__)).split("\n")
 
-  s.required_ruby_version = '>= 1.9.2'
+  s.required_ruby_version = '>= 1.9.3'
 
   s.add_dependency 'slop', '~>3.6'
   s.add_dependency 'grooveshark', '~>0.2.12'
