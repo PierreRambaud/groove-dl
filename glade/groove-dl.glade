@@ -88,10 +88,11 @@
                 <property name="margin_right">15</property>
                 <property name="margin_top">5</property>
                 <property name="margin_bottom">5</property>
-                <property name="active_id">1</property>
+                <property name="active_id">2</property>
                 <items>
-                  <item id="1" translatable="yes">Playlists</item>
-                  <item translatable="yes">Songs</item>
+                  <item id="0" translatable="yes">Playlists</item>
+                  <item id="1" translatable="yes">Songs</item>
+                  <item id="2" translatable="yes">Songs from playlist id</item>
                 </items>
               </object>
               <packing>
@@ -153,6 +154,7 @@
                     <property name="fixed_width">30</property>
                     <property name="title" translatable="yes">X</property>
                     <property name="clickable">True</property>
+                    <signal name="clicked" handler="on_search_list_selected_clicked" swapped="no"/>
                     <child>
                       <object class="GtkCellRendererToggle" id="search_list_cell_toggle">
                         <signal name="toggled" handler="on_search_list_toggle_toggled" swapped="no"/>

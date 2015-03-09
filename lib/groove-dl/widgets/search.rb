@@ -6,6 +6,10 @@ module GrooveDl
     class Search < Events
       attr_accessor :data, :store
 
+      TYPE_PLAYLISTS,
+      TYPE_SONGS,
+      TYPE_PLAYLIST_ID = *(0..2).to_a
+
       COLUMN_CHECKBOX,
       COLUMN_ID,
       COLUMN_NAME,
@@ -17,10 +21,19 @@ module GrooveDl
       end
 
       def on_search_button_clicked
-        type = @app.get_object('search_type').active_text
+        type = @app.get_object('search_type').active_id.to_i
         query = @app.get_object('search_entry').text
-        return if type.empty? || query.empty?
-        results = @client.search(type, query)
+        return if query.empty?
+
+        case type
+        when TYPE_PLAYLISTS
+          results = @client.search('Playlists', query)
+        when TYPE_SONGS
+          results = @client.search('Songs', query)
+        when TYPE_PLAYLIST_ID
+          playlist = Grooveshark::Playlist.new(@client, 'playlist_id' => query)
+          results = playlist.load_songs
+        end
 
         @data = {}
         @store = @app.get_object('search_list_store')
@@ -50,6 +63,14 @@ module GrooveDl
         fixed = iter[COLUMN_CHECKBOX]
         fixed ^= 1
         iter[COLUMN_CHECKBOX] = fixed
+      end
+
+      def on_search_list_selected_clicked
+        @store.each do |_model, _path, iter|
+          fixed = iter[COLUMN_CHECKBOX]
+          fixed ^= 1
+          iter[COLUMN_CHECKBOX] = fixed
+        end
       end
     end
   end
