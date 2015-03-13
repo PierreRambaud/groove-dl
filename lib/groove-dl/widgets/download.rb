@@ -7,6 +7,8 @@ module GrooveDl
       attr_accessor :search_list, :songs, :downloader
       attr_accessor :failed, :success, :queue
 
+      attr_reader :queue_store, :failed_store, :success_store
+
       RIGHT_CLICK = 3
 
       SUCCESS_COLUMN_PATH,
@@ -69,6 +71,7 @@ module GrooveDl
         search_list_store.each do |_model, _path, iter|
           next unless iter[column_checkbox]
           selected[iter[column_id]] = @search_list.data[iter[column_id]]
+          iter[column_checkbox] = false
         end
 
         @queue_store = @app.get_object('download_queue_list_store')
