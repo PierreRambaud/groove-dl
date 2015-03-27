@@ -37,7 +37,7 @@ Run `groove-dl` and a gtk app will be displayed, you can:
 In CLI mode:
 
 ```bash
-$ groove-dl-cli --help
+$ groove-dl --help
 Usage: groove-dl [COMMAND] [OPTIONS]
 
 Options:
@@ -57,7 +57,7 @@ See `<command> --help` for more information on a specific command.
 
 Search for song:
 ```bash
-$ groove-dl-cli search --help
+$ groove-dl search --help
 Usage: groove-dl search [OPTIONS]
 
 Options:
