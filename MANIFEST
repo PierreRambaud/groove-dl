@@ -7,7 +7,6 @@ MANIFEST
 README.md
 Rakefile
 bin/groove-dl
-bin/groove-dl-cli
 glade/groove-dl.glade
 groove-dl.gemspec
 lib/groove-dl.rb
