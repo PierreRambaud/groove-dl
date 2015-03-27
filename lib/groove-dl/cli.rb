@@ -40,7 +40,12 @@ module GrooveDl
 
           client = Grooveshark::Client.new
           d = Downloader.new(client, opts)
-          d.playlist(opts[:p]) if opts[:p]
+          if opts[:p]
+            GrooveDl.configuration.logger
+              .info("Download files into #{d.output_directory}")
+            d.playlist(opts[:p])
+          end
+
           d.song(opts[:s]) if opts[:s]
         end
       end

@@ -27,6 +27,14 @@ module GrooveDl
       expect(@downloader.download_queue).to be_falsy
     end
 
+    it 'should log error when download failed' do
+      @downloader.queue << 'something'
+      allow_any_instance_of(Logger).to receive(:error)
+        .with("undefined method `artist' for \"something\":String")
+      expect(@downloader.download_queue)
+        .to eq(skipped: 0, downloaded: 0)
+    end
+
     it 'should download playlist' do
       allow(@client).to receive(:request)
         .and_return('songs' => [{ 'song_id' =>  1,

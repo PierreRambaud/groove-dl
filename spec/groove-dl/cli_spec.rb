@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper'
 require 'groove-dl/cli'
+require 'groove-dl/configuration'
 require 'slop'
+require 'logger'
 
 # Groove Dl tests
 module GrooveDl
@@ -32,9 +34,11 @@ module GrooveDl
       end
 
       it 'should download playlist' do
+        allow_any_instance_of(Logger).to receive(:info)
         allow(Grooveshark::Client).to receive(:new).and_return(true)
         downloader = double
         allow(downloader).to receive(:playlist).with(1).and_return(true)
+        allow(downloader).to receive(:output_directory).and_return('/tmp')
         allow(Downloader).to receive(:new).and_return(downloader)
         expect(CLI.options.parse %w( -p 1)).to eq(['-p', '1'])
       end

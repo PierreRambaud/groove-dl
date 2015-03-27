@@ -3,10 +3,8 @@ module GrooveDl
   # Downloader Class
   class Downloader
     attr_accessor :type
-    attr_writer :client
-    attr_writer :download_queue
-    attr_writer :download_count
-    attr_writer :download_skip
+    attr_writer :client, :download_queue, :download_count, :download_skip
+    attr_reader :output_directory, :queue, :count, :skip
 
     ##
     # Initialize download
@@ -83,7 +81,11 @@ module GrooveDl
     def download_queue
       return false if @queue.empty?
       @queue.each do |song|
-        download(song, build_path(@output_directory, song))
+        begin
+          download(song, build_path(@output_directory, song))
+        rescue StandardError => e
+          GrooveDl.configuration.logger.error(e.message)
+        end
       end
 
       { skipped: @skip, downloaded: @count }
@@ -124,6 +126,10 @@ module GrooveDl
         pbar = ProgressBar.create(title: destination.split('/').last,
                                   format: '%a |%b>>%i| %p%% %t',
                                   total: response['content-length'].to_i)
+
+        dirname = File.dirname(destination)
+        FileUtils.mkdir_p(dirname) unless File.directory?(dirname)
+
         File.open(destination, 'w') do |f|
           response.read_body do |chunk|
             f.write(chunk)
