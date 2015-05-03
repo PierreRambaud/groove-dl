@@ -1,5 +1,7 @@
 #Grooveshark song downloader
 
+**GROOVESHARK.COM HAS BEEN TERMINATED ON APRIL 30, 2015**
+
 [![Build Status](https://travis-ci.org/PierreRambaud/groove-dl.png?branch=master)](https://travis-ci.org/PierreRambaud/groove-dl)
 [![Gem Version](https://badge.fury.io/rb/groove-dl.svg)](http://badge.fury.io/rb/groove-dl)
 
